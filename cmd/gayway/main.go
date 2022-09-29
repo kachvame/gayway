@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -12,18 +13,18 @@ import (
 
 func run() error {
 	if err := setupLogger(); err != nil {
-		return err
+		return fmt.Errorf("failed to set up logging: %w", err)
 	}
 
 	discordLogger := log.With().Str("component", "bot").Logger()
 
 	discord, err := discordgo.New("Bot " + os.Getenv("GAYWAY_DISCORD_TOKEN"))
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to initialize discordgo: %w", err)
 	}
 
 	if err := discord.Open(); err != nil {
-		return err
+		return fmt.Errorf("failed to open discord client: %w", err)
 	}
 
 	discordLogger.Info().Msg("opened discord client")
@@ -47,7 +48,7 @@ func setupLogger() error {
 
 	logLevel, err := zerolog.ParseLevel(logLevelEnv)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse log level '%s': %w", logLevel, err)
 	}
 	log.Logger = log.Level(logLevel)
 
