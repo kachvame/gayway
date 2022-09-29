@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	gaywayLog "github.com/kachvame/gayway/log"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
@@ -12,7 +13,12 @@ import (
 )
 
 func run() error {
-	if err := setupLogger(); err != nil {
+	logLevel := os.Getenv("GAYWAY_LOG_LEVEL")
+	if logLevel == "" {
+		logLevel = "info"
+	}
+
+	if err := gaywayLog.SetupLogger(logLevel); err != nil {
 		return fmt.Errorf("failed to set up logging: %w", err)
 	}
 
@@ -36,29 +42,6 @@ func run() error {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
-
-	return nil
-}
-
-func setupLogger() error {
-	logLevelEnv := os.Getenv("GAYWAY_LOG_LEVEL")
-	if logLevelEnv == "" {
-		logLevelEnv = "info"
-	}
-
-	logLevel, err := zerolog.ParseLevel(logLevelEnv)
-	if err != nil {
-		return fmt.Errorf("failed to parse log level '%s': %w", logLevel, err)
-	}
-	log.Logger = log.Level(logLevel)
-
-	if os.Getenv("GAYWAY_DEV") == "true" {
-		log.Logger = log.
-			Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: zerolog.TimeFormatUnix}).
-			With().
-			Caller().
-			Logger()
-	}
 
 	return nil
 }
