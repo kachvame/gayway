@@ -52,7 +52,7 @@ func main() {
 	zerolog.DefaultContextLogger = &log.Logger
 
 	if err := run(); err != nil {
-		log.Error().Err(err)
+		log.Error().Err(err).Msg("")
 		os.Exit(1)
 	}
 }
