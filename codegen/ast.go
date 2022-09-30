@@ -1,9 +1,12 @@
 package codegen
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
+	"go/types"
 	"golang.org/x/tools/go/packages"
+	"strings"
 	"unicode"
 )
 
@@ -15,12 +18,13 @@ type StructDeclaration struct {
 }
 
 type MethodDeclaration struct {
-	Name string
-	Decl *ast.FuncDecl
-	Args []*Argument
+	Name    string
+	Decl    *ast.FuncDecl
+	Args    []*Value
+	Results []*Value
 }
 
-type Argument struct {
+type Value struct {
 	Name string
 	Type *TypeExpression
 }
@@ -64,9 +68,38 @@ func unwrapExpr(expr ast.Expr) *TypeExpression {
 	}
 }
 
+func parseFields(fields *ast.FieldList, defaultName func(index int, typ *TypeExpression) string) []*Value {
+	if fields.NumFields() <= 0 {
+		return nil
+	}
+
+	values := make([]*Value, 0, fields.NumFields())
+	for index, field := range fields.List {
+		paramType := unwrapExpr(field.Type)
+
+		var name string
+		if len(field.Names) > 0 {
+			name = field.Names[0].Name
+		} else {
+			name = defaultName(index, paramType)
+		}
+
+		values = append(values, &Value{
+			Name: name,
+			Type: paramType,
+		})
+	}
+
+	return values
+}
+
 func FindStructs(pkg *packages.Package) StructDeclarations {
 	// TODO: add debug logs
 	res := make(StructDeclarations)
+
+	valueDefaultName := func(index int, _ *TypeExpression) string {
+		return fmt.Sprintf("Value%d", index)
+	}
 
 	// Find all structs
 	for _, syn := range pkg.Syntax {
@@ -110,20 +143,11 @@ func FindStructs(pkg *packages.Package) StructDeclarations {
 					continue
 				}
 
-				args := make([]*Argument, 0, funcDecl.Type.Params.NumFields())
-				for _, param := range funcDecl.Type.Params.List {
-					paramType := unwrapExpr(param.Type)
-
-					args = append(args, &Argument{
-						Name: param.Names[0].Name,
-						Type: paramType,
-					})
-				}
-
 				res[structName].Methods = append(res[structName].Methods, &MethodDeclaration{
-					Name: funcName,
-					Decl: funcDecl,
-					Args: args,
+					Name:    funcName,
+					Decl:    funcDecl,
+					Args:    parseFields(funcDecl.Type.Params, valueDefaultName),
+					Results: parseFields(funcDecl.Type.Results, valueDefaultName),
 				})
 			}
 		}
