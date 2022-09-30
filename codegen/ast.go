@@ -39,6 +39,8 @@ type Enums map[string][]*types.Const
 
 type StructDeclarations map[string]*StructDeclaration
 
+type Interfaces map[string][]string
+
 func isExported(name string) bool {
 	return unicode.IsUpper([]rune(name)[0])
 }
@@ -207,4 +209,38 @@ func FindStructs(pkg *packages.Package, fieldlessStructs map[string]struct{}) St
 	}
 
 	return res
+}
+
+func FindInterfaces(pkg *packages.Package, structs StructDeclarations) Interfaces {
+	typesScope := pkg.Types.Scope()
+
+	interfaces := make(Interfaces)
+
+	for _, syn := range pkg.Syntax {
+		for _, dec := range syn.Decls {
+			if gen, ok := dec.(*ast.GenDecl); ok && gen.Tok == token.TYPE {
+				for _, spec := range gen.Specs {
+					if ts, ok := spec.(*ast.TypeSpec); ok {
+						if _, ok := ts.Type.(*ast.InterfaceType); ok {
+							actualType := typesScope.Lookup(ts.Name.String()).(*types.TypeName)
+
+							interfaceName := actualType.Name()
+							interfaceType := actualType.Type().Underlying().(*types.Interface)
+
+							for name := range structs {
+								structTypeName := typesScope.Lookup(name).(*types.TypeName)
+								ptr := types.NewPointer(structTypeName.Type())
+
+								if types.Implements(ptr.Underlying(), interfaceType) {
+									interfaces[interfaceName] = append(interfaces[interfaceName], name)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return interfaces
 }
