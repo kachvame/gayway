@@ -35,6 +35,8 @@ type TypeExpression struct {
 	IsArray    bool
 }
 
+type Enums map[string][]*types.Const
+
 type StructDeclarations map[string]*StructDeclaration
 
 func isExported(name string) bool {
@@ -92,6 +94,39 @@ func parseFields(fields *ast.FieldList, defaultName func(index int, typ *TypeExp
 	}
 
 	return values
+}
+
+func FindEnums(pkg *packages.Package) Enums {
+	typePrefix := fmt.Sprintf("%s.", pkg.ID)
+	typesScope := pkg.Types.Scope()
+
+	enumValues := make(Enums)
+	for _, syn := range pkg.Syntax {
+		for _, dec := range syn.Decls {
+			if gen, ok := dec.(*ast.GenDecl); ok {
+				for _, spec := range gen.Specs {
+					if vs, ok := spec.(*ast.ValueSpec); ok {
+						for _, name := range vs.Names {
+							object := typesScope.Lookup(name.Name)
+							if constant, ok := object.(*types.Const); ok {
+								typ := constant.Type().String()
+
+								if !strings.HasPrefix(typ, typePrefix) {
+									continue
+								}
+
+								typ = strings.TrimPrefix(typ, typePrefix)
+
+								enumValues[typ] = append(enumValues[typ], constant)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return enumValues
 }
 
 func FindStructs(pkg *packages.Package, fieldlessStructs map[string]struct{}) StructDeclarations {
