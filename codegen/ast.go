@@ -14,6 +14,7 @@ type StructDeclaration struct {
 	Decl    *ast.GenDecl
 	Spec    *ast.TypeSpec
 	Struct  *ast.StructType
+	Fields  []*Value
 	Methods []*MethodDeclaration
 }
 
@@ -93,9 +94,13 @@ func parseFields(fields *ast.FieldList, defaultName func(index int, typ *TypeExp
 	return values
 }
 
-func FindStructs(pkg *packages.Package) StructDeclarations {
+func FindStructs(pkg *packages.Package, fieldlessStructs map[string]struct{}) StructDeclarations {
 	// TODO: add debug logs
 	res := make(StructDeclarations)
+
+	structFieldDefaultName := func(_ int, typ *TypeExpression) string {
+		return typ.Identifier.Name
+	}
 
 	valueDefaultName := func(index int, _ *TypeExpression) string {
 		return fmt.Sprintf("Value%d", index)
@@ -108,11 +113,24 @@ func FindStructs(pkg *packages.Package) StructDeclarations {
 				for _, spec := range gen.Specs {
 					if ts, ok := spec.(*ast.TypeSpec); ok {
 						if structType, ok := ts.Type.(*ast.StructType); ok {
-							res[ts.Name.String()] = &StructDeclaration{
+							structName := ts.Name.String()
+							if !isExported(structName) {
+								continue
+							}
+
+							_, isFieldless := fieldlessStructs[structName]
+
+							structDeclaration := &StructDeclaration{
 								Decl:   gen,
 								Spec:   ts,
 								Struct: structType,
 							}
+
+							if !isFieldless {
+								structDeclaration.Fields = parseFields(structType.Fields, structFieldDefaultName)
+							}
+
+							res[structName] = structDeclaration
 						}
 					}
 				}
