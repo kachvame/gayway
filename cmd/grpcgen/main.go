@@ -154,7 +154,7 @@ func run() error {
 
 	log.Info().Msg("found 'Session' struct")
 
-	methods := make([]*Method, 0, len(sessionStruct.Methods))
+	methods := make([]*Method, 0, len(sessionStruct.Methods)-len(blacklistedMethods))
 	for _, methodDeclaration := range sessionStruct.Methods {
 		if _, isBlacklisted := blacklistedMethods[methodDeclaration.Name]; isBlacklisted {
 			continue
