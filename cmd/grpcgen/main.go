@@ -162,17 +162,19 @@ func run() error {
 
 		log.Info().Msgf("processing method '%s'", methodDeclaration.Name)
 
-		method := &Method{
+		methods = append(methods, &Method{
 			Name:   methodDeclaration.Name,
 			Input:  codegenValuesToProtoMessage(methodDeclaration.Args),
 			Output: codegenValuesToProtoMessage(methodDeclaration.Results),
-		}
-
-		methods = append(methods, method)
+		})
 	}
 
-	structs := make([]*Struct, 0, len(structsMap))
+	structs := make([]*Struct, 0, len(structsMap)-len(fieldlessStructs))
 	for name, structDeclaration := range structsMap {
+		if len(structDeclaration.Fields) <= 0 {
+			continue
+		}
+
 		structs = append(structs, &Struct{
 			Name:    name,
 			Message: codegenValuesToProtoMessage(structDeclaration.Fields),
