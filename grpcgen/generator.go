@@ -14,6 +14,7 @@ type Generator struct {
 	logger           zerolog.Logger
 	packageName      string
 	entrypointStruct string
+	typesScope       *types.Scope
 }
 
 var (
@@ -47,9 +48,9 @@ func (generator *Generator) Run() error {
 	generator.logger.Info().Msg("parsed discordgo package")
 
 	discordgoPackage := discordgoPackages[0]
-	typesScope := discordgoPackage.Types.Scope()
+	generator.typesScope = discordgoPackage.Types.Scope()
 
-	_, sessionStruct := codegen.LookupType[*types.Named](typesScope, generator.entrypointStruct)
+	_, sessionStruct := codegen.LookupType[*types.Named](generator.typesScope, generator.entrypointStruct)
 	if sessionStruct == nil {
 		return fmt.Errorf("failed to find entrypoint struct '%s'", generator.entrypointStruct)
 	}
