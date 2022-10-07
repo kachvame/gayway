@@ -3,7 +3,7 @@ module github.com/kachvame/gayway
 go 1.19
 
 require (
-	github.com/bwmarrin/discordgo v0.26.1
+	github.com/bwmarrin/discordgo v0.26.2-0.20221007114755-410cf4fac5a3
 	github.com/rs/zerolog v1.28.0
 	golang.org/x/tools v0.1.12
 )
