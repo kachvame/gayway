@@ -40,14 +40,14 @@ func (converter *MessageTypeConverter) Convert(typ types.Type) MessageType {
 	case *types.Named:
 		result = NewNamedMessageType(typ.(*types.Named))
 	case *types.Interface:
-		iface := typ.(*types.Interface)
-		if iface.Empty() {
+		interfaceType := typ.(*types.Interface)
+		if interfaceType.Empty() {
 			result = NewAnyMessageType()
 
 			break
 		}
 
-		result = NewInterfaceMessageType(iface)
+		result = NewInterfaceMessageType(interfaceType)
 	case *types.Pointer:
 		result = NewPointerMessageType(converter, typ.(*types.Pointer))
 	case *types.Slice:
@@ -124,18 +124,18 @@ func NewInterfaceMessageType(typ *types.Interface) *InterfaceMessageType {
 	}
 }
 
-func (iface *InterfaceMessageType) Base() MessageType {
-	return iface
+func (interfaceType *InterfaceMessageType) Base() MessageType {
+	return interfaceType
 }
 
-func (iface *InterfaceMessageType) Package() *types.Package {
-	fmt.Println(iface.typ)
+func (interfaceType *InterfaceMessageType) Package() *types.Package {
+	fmt.Println(interfaceType.typ)
 
 	return nil
 }
 
-func (iface *InterfaceMessageType) String() string {
-	return iface.typ.String()
+func (interfaceType *InterfaceMessageType) String() string {
+	return interfaceType.typ.String()
 }
 
 type AnyMessageType struct{}
