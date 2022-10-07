@@ -18,7 +18,7 @@ type Generator struct {
 	messageTypeConverter *MessageTypeConverter
 	ignoredMethods       map[string]struct{}
 
-	messages []Message
+	messages []*Message
 }
 
 var (
@@ -85,15 +85,18 @@ func (generator *Generator) Run() error {
 			Str("results", methodResults.String()).
 			Msgf("processing method %d: %s", methodIdx, methodName)
 
-		generator.processTuple(methodParams)
-		generator.processTuple(methodResults)
+		paramsMessage := generator.processTuple(fmt.Sprintf("%sParams", methodName), methodParams)
+		resultsMessage := generator.processTuple(fmt.Sprintf("%sResults", methodName), methodResults)
+
+		generator.messages = append(generator.messages, paramsMessage)
+		generator.messages = append(generator.messages, resultsMessage)
 	}
 
 	return nil
 }
 
-func (generator *Generator) processTuple(tuple *types.Tuple) {
-	message := Message{}
+func (generator *Generator) processTuple(name string, tuple *types.Tuple) *Message {
+	message := NewMessage(name)
 
 	for i := 0; i < tuple.Len(); i++ {
 		entry := tuple.At(i)
@@ -112,8 +115,8 @@ func (generator *Generator) processTuple(tuple *types.Tuple) {
 
 		generator.logger.Trace().Msgf("got message type %T: %s", messageType, messageType.String())
 
-		message[entryName] = messageType
+		message.Fields[entryName] = messageType
 	}
 
-	generator.messages = append(generator.messages, message)
+	return message
 }

@@ -5,7 +5,17 @@ import (
 	"go/types"
 )
 
-type Message map[string]MessageType
+type Message struct {
+	Name   string
+	Fields map[string]MessageType
+}
+
+func NewMessage(name string) *Message {
+	return &Message{
+		Name:   name,
+		Fields: make(map[string]MessageType),
+	}
+}
 
 type MessageType interface {
 	fmt.Stringer
