@@ -31,15 +31,6 @@ var (
 		"Close":          {},
 		"AddHandler":     {},
 		"AddHandlerOnce": {},
-		// FIXME: these methods use enums that aren't actually enums and those
-		//        are impossible for us to detect statically, so unless the
-		//        issue is fixed upstream, these should stay ignored.
-		"GuildScheduledEvent":       {},
-		"GuildScheduledEventCreate": {},
-		"GuildScheduledEventDelete": {},
-		"GuildScheduledEventEdit":   {},
-		"GuildScheduledEventUsers":  {},
-		"GuildScheduledEvents":      {},
 	}
 
 	fieldlessStructs = map[string]struct{}{
@@ -48,11 +39,6 @@ var (
 		"RateLimiter":     {},
 		"Session":         {},
 		"VoiceConnection": {},
-		// FIXME: these structs use enums that aren't actually enums and those
-		//        are impossible for us to detect statically, so unless the
-		//        issue is fixed upstream, these should stay ignored.
-		"GuildScheduledEvent":       {},
-		"GuildScheduledEventParams": {},
 	}
 )
 
