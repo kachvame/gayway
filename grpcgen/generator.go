@@ -15,6 +15,7 @@ type Generator struct {
 	packageName      string
 	entrypointStruct string
 	typesScope       *types.Scope
+	ignoredMethods   map[string]struct{}
 }
 
 var (
@@ -22,11 +23,12 @@ var (
 	protobufSchemaTemplateData string
 )
 
-func NewGenerator(logger zerolog.Logger, packageName, entrypointStruct string) *Generator {
+func NewGenerator(logger zerolog.Logger, packageName, entrypointStruct string, ignoredMethods map[string]struct{}) *Generator {
 	return &Generator{
 		logger:           logger,
 		packageName:      packageName,
 		entrypointStruct: entrypointStruct,
+		ignoredMethods:   ignoredMethods,
 	}
 }
 
@@ -57,5 +59,35 @@ func (generator *Generator) Run() error {
 
 	generator.logger.Info().Msgf("found entrypoint struct '%s'", generator.entrypointStruct)
 
+	for methodIdx := 0; methodIdx < sessionStruct.NumMethods(); methodIdx++ {
+		method := sessionStruct.Method(methodIdx)
+
+		if !method.Exported() {
+			continue
+		}
+
+		methodName := method.Name()
+
+		if _, ok := generator.ignoredMethods[methodName]; ok {
+			continue
+		}
+
+		methodSignature := method.Type().(*types.Signature)
+		methodParams := methodSignature.Params()
+		methodResults := methodSignature.Results()
+
+		generator.logger.Trace().
+			Str("params", methodParams.String()).
+			Str("results", methodResults.String()).
+			Msgf("processing method %d: %s", methodIdx, methodName)
+
+		generator.processTuple(methodParams)
+		generator.processTuple(methodResults)
+	}
+
 	return nil
+}
+
+func (generator *Generator) processTuple(tuple *types.Tuple) {
+ // TODO: implement
 }

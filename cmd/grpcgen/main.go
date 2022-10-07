@@ -16,6 +16,16 @@ const (
 	entrypointStruct = "Session"
 )
 
+var (
+	ignoredMethods = map[string]struct{}{
+		"AddHandler":     {},
+		"AddHandlerOnce": {},
+		"Open":           {},
+		"Close":          {},
+		"CloseWithCode":  {},
+	}
+)
+
 func run() error {
 	logLevel := os.Getenv("GAYWAY_LOG_LEVEL")
 	if logLevel == "" {
@@ -28,7 +38,7 @@ func run() error {
 
 	grpcgenLogger := log.With().Str("component", "grpcgen").Logger()
 
-	generator := grpcgen.NewGenerator(grpcgenLogger, packageName, entrypointStruct)
+	generator := grpcgen.NewGenerator(grpcgenLogger, packageName, entrypointStruct, ignoredMethods)
 
 	if err := generator.Run(); err != nil {
 		return fmt.Errorf("generator failed: %w", err)
