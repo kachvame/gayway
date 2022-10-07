@@ -11,11 +11,14 @@ import (
 )
 
 type Generator struct {
-	logger           zerolog.Logger
-	packageName      string
-	entrypointStruct string
-	typesScope       *types.Scope
-	ignoredMethods   map[string]struct{}
+	logger               zerolog.Logger
+	packageName          string
+	entrypointStruct     string
+	typesScope           *types.Scope
+	messageTypeConverter *MessageTypeConverter
+	ignoredMethods       map[string]struct{}
+
+	messages []Message
 }
 
 var (
@@ -25,10 +28,11 @@ var (
 
 func NewGenerator(logger zerolog.Logger, packageName, entrypointStruct string, ignoredMethods map[string]struct{}) *Generator {
 	return &Generator{
-		logger:           logger,
-		packageName:      packageName,
-		entrypointStruct: entrypointStruct,
-		ignoredMethods:   ignoredMethods,
+		logger:               logger,
+		packageName:          packageName,
+		entrypointStruct:     entrypointStruct,
+		ignoredMethods:       ignoredMethods,
+		messageTypeConverter: NewMessageTypeConverter(),
 	}
 }
 
@@ -89,5 +93,27 @@ func (generator *Generator) Run() error {
 }
 
 func (generator *Generator) processTuple(tuple *types.Tuple) {
- // TODO: implement
+	message := Message{}
+
+	for i := 0; i < tuple.Len(); i++ {
+		entry := tuple.At(i)
+
+		generator.logger.Trace().Msgf("processing tuple entry %d: %s", i, entry.String())
+
+		entryName := entry.Name()
+		if entryName == "" {
+			entryName = fmt.Sprintf("Field%d", i+1)
+
+			generator.logger.Trace().Msgf("tuple entry has no name, using %s", entryName)
+		}
+
+		entryType := entry.Type()
+		messageType := generator.messageTypeConverter.Convert(entryType)
+
+		generator.logger.Trace().Msgf("got message type %T: %s", messageType, messageType.String())
+
+		message[entryName] = messageType
+	}
+
+	generator.messages = append(generator.messages, message)
 }
