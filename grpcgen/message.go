@@ -24,9 +24,6 @@ func NewMessageTypeConverter() *MessageTypeConverter {
 	}
 }
 
-// TODO: structs to messages
-// TODO: interface implementations
-
 func (converter *MessageTypeConverter) Convert(typ types.Type) MessageType {
 	if existing, ok := converter.existingMessageTypes[typ]; ok {
 		return existing
@@ -38,7 +35,23 @@ func (converter *MessageTypeConverter) Convert(typ types.Type) MessageType {
 	case *types.Basic:
 		result = NewBasicMessageType(typ.(*types.Basic))
 	case *types.Named:
-		result = NewNamedMessageType(typ.(*types.Named))
+		named := typ.(*types.Named)
+		underlying := named.Underlying()
+
+		switch underlying.(type) {
+		case *types.Struct:
+			// TODO: structs to messages
+			result = NewStructMessageType(named, underlying.(*types.Struct))
+		case *types.Interface:
+			// TODO: interface implementations
+			result = NewInterfaceMessageType(named, underlying.(*types.Interface))
+		case *types.Basic:
+			// TODO: detect enums
+			result = NewNamedMessageType(typ.(*types.Named))
+		default:
+			panic("unreachable")
+		}
+
 	case *types.Interface:
 		interfaceType := typ.(*types.Interface)
 		if interfaceType.Empty() {
@@ -47,7 +60,7 @@ func (converter *MessageTypeConverter) Convert(typ types.Type) MessageType {
 			break
 		}
 
-		result = NewInterfaceMessageType(interfaceType)
+		panic("unreachable")
 	case *types.Pointer:
 		result = NewPointerMessageType(converter, typ.(*types.Pointer))
 	case *types.Slice:
@@ -112,15 +125,41 @@ func (named *NamedMessageType) Package() *types.Package {
 	return named.typ.Obj().Pkg()
 }
 
-type InterfaceMessageType struct {
-	typ *types.Interface
+type StructMessageType struct {
+	named *types.Named
+	typ   *types.Struct
 }
 
-func NewInterfaceMessageType(typ *types.Interface) *InterfaceMessageType {
+func NewStructMessageType(named *types.Named, typ *types.Struct) *StructMessageType {
+	return &StructMessageType{
+		named: named,
+		typ:   typ,
+	}
+}
+
+func (structType *StructMessageType) Base() MessageType {
+	return structType
+}
+
+func (structType *StructMessageType) Package() *types.Package {
+	return structType.named.Obj().Pkg()
+}
+
+func (structType *StructMessageType) String() string {
+	return structType.named.Obj().Name()
+}
+
+type InterfaceMessageType struct {
+	named *types.Named
+	typ   *types.Interface
+}
+
+func NewInterfaceMessageType(named *types.Named, typ *types.Interface) *InterfaceMessageType {
 	fmt.Println("interface", typ.String())
 
 	return &InterfaceMessageType{
-		typ: typ,
+		named: named,
+		typ:   typ,
 	}
 }
 
