@@ -6,11 +6,12 @@ metadata:
     app: gayway
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: gayway
   template:
-    strategy: Recreate
     metadata:
       name: gayway
       labels:
