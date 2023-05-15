@@ -1,4 +1,4 @@
-FROM golang as base
+FROM golang as development
 
 WORKDIR /app
 
@@ -14,6 +14,8 @@ RUN go mod download
 
 COPY . .
 
+FROM development as build
+
 RUN go build -o app ./cmd/gayway
 
 FROM alpine:latest as certs
@@ -23,7 +25,7 @@ RUN apk --update add ca-certificates
 FROM scratch as app
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=base app /
+COPY --from=build app /
 
 ENTRYPOINT ["/app"]
 

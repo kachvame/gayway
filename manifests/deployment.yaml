@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gayway
+  labels:
+    app: gayway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gayway
+  template:
+    strategy: Recreate
+    metadata:
+      name: gayway
+      labels:
+        app: gayway
+    spec:
+      containers:
+        - name: gayway
+          image: gayway
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: gayway
+      restartPolicy: Always
