@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/gorilla/websocket"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"log"
 	"os"
@@ -82,6 +83,10 @@ func run() error {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
+
+	if err := discord.CloseWithCode(websocket.CloseServiceRestart); err != nil {
+		return fmt.Errorf("failed to close discord conn: %w", err)
+	}
 
 	_, err = cli.Put(context.Background(), EtcdSequenceKey, strconv.Itoa(int(getSequence(discord))))
 	if err != nil {
