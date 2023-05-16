@@ -2,15 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"github.com/kachvame/gayway/gateway"
 	"github.com/kachvame/gayway/kv/etcd"
-	"github.com/kachvame/gayway/reflection"
 	"log"
 	"os"
 	"strings"
-	"sync/atomic"
-	"unsafe"
 )
 
 func run() error {
@@ -41,12 +37,6 @@ func run() error {
 	}
 
 	return nil
-}
-
-func getSequence(s *discordgo.Session) int64 {
-	field := reflection.GetField(s, "sequence")
-	ptr := (*int64)(unsafe.Pointer(field.Pointer()))
-	return atomic.LoadInt64(ptr)
 }
 
 func main() {
