@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/gorilla/websocket"
+	"github.com/kachvame/gayway/reflection"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"log"
 	"os"
 	"os/signal"
-	"reflect"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -61,15 +61,18 @@ func run() error {
 		sequence = int64(seq)
 	}
 
-	defer cli.Close()
+	defer func(cli *clientv3.Client) {
+		_ = cli.Close()
+	}(cli)
+
 	discord, err := discordgo.New(fmt.Sprintf("Bot %s", discordToken))
 	if err != nil {
 		return fmt.Errorf("failed to initialize discordgo: %w", err)
 	}
 
 	if sessionID != "" && sequence != 0 {
-		setField(discord, "sequence", &sequence)
-		setField(discord, "sessionID", sessionID)
+		reflection.SetField(discord, "sequence", &sequence)
+		reflection.SetField(discord, "sessionID", sessionID)
 	}
 
 	discord.AddHandler(func(se *discordgo.Session, e *discordgo.Event) {
@@ -93,7 +96,7 @@ func run() error {
 		return fmt.Errorf("failed to put sequence: %w", err)
 	}
 
-	_, err = cli.Put(context.Background(), EtcdSessionIDKey, getField(discord, "sessionID").String())
+	_, err = cli.Put(context.Background(), EtcdSessionIDKey, reflection.GetField(discord, "sessionID").String())
 	if err != nil {
 		return fmt.Errorf("failed to put session-id: %w", err)
 	}
@@ -101,25 +104,10 @@ func run() error {
 	return nil
 }
 
-func getField(s interface{}, fieldName string) reflect.Value {
-	val := reflect.ValueOf(s)
-	return reflect.Indirect(val).FieldByName(fieldName)
-}
-
 func getSequence(s *discordgo.Session) int64 {
-	field := getField(s, "sequence")
+	field := reflection.GetField(s, "sequence")
 	ptr := (*int64)(unsafe.Pointer(field.Pointer()))
 	return atomic.LoadInt64(ptr)
-}
-
-func setField(s interface{}, fieldName string, newVal interface{}) {
-	val := reflect.ValueOf(s)
-	field := reflect.Indirect(val).FieldByName(fieldName)
-	ptrToField := unsafe.Pointer(field.UnsafeAddr())
-	settableField := reflect.NewAt(field.Type(), ptrToField).Elem()
-
-	n := reflect.ValueOf(newVal)
-	settableField.Set(n)
 }
 
 func main() {
