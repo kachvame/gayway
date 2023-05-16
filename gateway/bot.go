@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/kachvame/gayway/kv"
 	"github.com/kachvame/gayway/reflection"
+	"github.com/rs/zerolog"
 	"os"
 	"os/signal"
 	"strconv"
@@ -20,22 +21,30 @@ const (
 	SessionIDKey = "gayway/session-id"
 )
 
+type Config struct {
+	Token  string
+	Store  kv.Store
+	Logger zerolog.Logger
+}
+
 type Gateway struct {
 	session *discordgo.Session
 	store   kv.Store
+	logger  zerolog.Logger
 }
 
-func NewGateway(token string, store kv.Store) (*Gateway, error) {
-	session, err := discordgo.New("Bot " + token)
+func NewGateway(config Config) (*Gateway, error) {
+	session, err := discordgo.New("Bot " + config.Token)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize discord session: %w", err)
 	}
 
-	session.AddHandler(func(_ *discordgo.Session, event *discordgo.Event) {
-		fmt.Println(event.Type)
-	})
+	gateway := &Gateway{session: session, store: config.Store, logger: config.Logger}
 
-	return &Gateway{session: session, store: store}, nil
+	session.AddHandler(gateway.Ready)
+	session.AddHandler(gateway.Resumed)
+
+	return gateway, nil
 }
 
 func (gateway *Gateway) Start() error {
@@ -87,4 +96,16 @@ func (gateway *Gateway) Start() error {
 	}
 
 	return nil
+}
+
+func (gateway *Gateway) Ready(_ *discordgo.Session, _ *discordgo.Ready) {
+	gateway.logger.
+		Info().
+		Msg("Received ready")
+}
+
+func (gateway *Gateway) Resumed(_ *discordgo.Session, _ *discordgo.Resumed) {
+	gateway.logger.
+		Info().
+		Msg("Received resumed")
 }
