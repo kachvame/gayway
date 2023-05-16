@@ -2,17 +2,19 @@ module github.com/kachvame/gayway
 
 go 1.20
 
-require github.com/bwmarrin/discordgo v0.27.1
+require (
+	github.com/bwmarrin/discordgo v0.27.1
+	github.com/gorilla/websocket v1.4.2
+	go.etcd.io/etcd/client/v3 v3.5.9
+)
 
 require (
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/gorilla/websocket v1.4.2 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.9 // indirect
-	go.etcd.io/etcd/client/v3 v3.5.9 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect
