@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-kafka/v2/pkg/kafka"
+	"github.com/alexdrl/zerowater"
 	"github.com/kachvame/gayway/gateway"
 	"github.com/kachvame/gayway/kv/etcd"
 	gaywayLog "github.com/kachvame/gayway/log"
@@ -37,12 +37,16 @@ func run() error {
 		return fmt.Errorf("failed to make etcd store: %w", err)
 	}
 
+	watermillLogger := zerowater.NewZerologLoggerAdapter(
+		log.Logger.With().Str("component", "watermill").Logger(),
+	)
+
 	publisher, err := kafka.NewPublisher(
 		kafka.PublisherConfig{
 			Brokers:   strings.Split(kafkaAddress, ","),
 			Marshaler: kafka.DefaultMarshaler{},
 		},
-		watermill.NewStdLogger(false, false),
+		watermillLogger,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create kafka publisher: %w", err)
