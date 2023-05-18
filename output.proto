@@ -1,0 +1,2509 @@
+syntax = "proto3";
+import "google/protobuf/any.proto";
+message Activity {
+  string Name = 1;
+  int32 Type = 2;
+  string URL = 3;
+  Time CreatedAt = 4;
+  string ApplicationID = 5;
+  string State = 6;
+  string Details = 7;
+  TimeStamps Timestamps = 8;
+  Emoji Emoji = 9;
+  Party Party = 10;
+  Assets Assets = 11;
+  Secrets Secrets = 12;
+  bool Instance = 13;
+  int32 Flags = 14;
+}
+message Application {
+  string ID = 1;
+  string Name = 2;
+  string Icon = 3;
+  string Description = 4;
+  repeated string RPCOrigins = 5;
+  bool BotPublic = 6;
+  bool BotRequireCodeGrant = 7;
+  string TermsOfServiceURL = 8;
+  string PrivacyProxyURL = 9;
+  User Owner = 10;
+  string Summary = 11;
+  string VerifyKey = 12;
+  Team Team = 13;
+  string GuildID = 14;
+  string PrimarySKUID = 15;
+  string Slug = 16;
+  string CoverImage = 17;
+  int32 Flags = 18;
+}
+message ApplicationAssetsInput {
+  string appID = 1;
+}
+message ApplicationAssetsOutput {
+  repeated Asset ass = 1;
+  optional string err = 2;
+}
+message ApplicationBotCreateInput {
+  string appID = 1;
+}
+message ApplicationBotCreateOutput {
+  User st = 1;
+  optional string err = 2;
+}
+message ApplicationCommand {
+  string ID = 1;
+  string ApplicationID = 2;
+  string GuildID = 3;
+  string Version = 4;
+  uint32 Type = 5;
+  string Name = 6;
+  map<string, string> NameLocalizations = 7;
+  bool DefaultPermission = 8;
+  int64 DefaultMemberPermissions = 9;
+  bool DMPermission = 10;
+  bool NSFW = 11;
+  string Description = 12;
+  map<string, string> DescriptionLocalizations = 13;
+  repeated ApplicationCommandOption Options = 14;
+}
+message ApplicationCommandBulkOverwriteInput {
+  string appID = 1;
+  string guildID = 2;
+  repeated ApplicationCommand commands = 3;
+}
+message ApplicationCommandBulkOverwriteOutput {
+  repeated ApplicationCommand createdCommands = 1;
+  optional string err = 2;
+}
+message ApplicationCommandCreateInput {
+  string appID = 1;
+  string guildID = 2;
+  ApplicationCommand cmd = 3;
+}
+message ApplicationCommandCreateOutput {
+  ApplicationCommand ccmd = 1;
+  optional string err = 2;
+}
+message ApplicationCommandDeleteInput {
+  string appID = 1;
+  string guildID = 2;
+  string cmdID = 3;
+}
+message ApplicationCommandDeleteOutput {
+  optional string field1 = 1;
+}
+message ApplicationCommandEditInput {
+  string appID = 1;
+  string guildID = 2;
+  string cmdID = 3;
+  ApplicationCommand cmd = 4;
+}
+message ApplicationCommandEditOutput {
+  ApplicationCommand updated = 1;
+  optional string err = 2;
+}
+message ApplicationCommandInput {
+  string appID = 1;
+  string guildID = 2;
+  string cmdID = 3;
+}
+message ApplicationCommandOption {
+  uint32 Type = 1;
+  string Name = 2;
+  map<string, string> NameLocalizations = 3;
+  string Description = 4;
+  map<string, string> DescriptionLocalizations = 5;
+  repeated int32 ChannelTypes = 6;
+  bool Required = 7;
+  repeated ApplicationCommandOption Options = 8;
+  bool Autocomplete = 9;
+  repeated ApplicationCommandOptionChoice Choices = 10;
+  double MinValue = 11;
+  double MaxValue = 12;
+  int32 MinLength = 13;
+  int32 MaxLength = 14;
+}
+message ApplicationCommandOptionChoice {
+  string Name = 1;
+  map<string, string> NameLocalizations = 2;
+  google.protobuf.Any Value = 3;
+}
+message ApplicationCommandOutput {
+  ApplicationCommand cmd = 1;
+  optional string err = 2;
+}
+message ApplicationCommandPermissions {
+  string ID = 1;
+  uint32 Type = 2;
+  bool Permission = 3;
+}
+message ApplicationCommandPermissionsBatchEditInput {
+  string appID = 1;
+  string guildID = 2;
+  repeated GuildApplicationCommandPermissions permissions = 3;
+}
+message ApplicationCommandPermissionsBatchEditOutput {
+  optional string err = 1;
+}
+message ApplicationCommandPermissionsEditInput {
+  string appID = 1;
+  string guildID = 2;
+  string cmdID = 3;
+  ApplicationCommandPermissionsList permissions = 4;
+}
+message ApplicationCommandPermissionsEditOutput {
+  optional string err = 1;
+}
+message ApplicationCommandPermissionsInput {
+  string appID = 1;
+  string guildID = 2;
+  string cmdID = 3;
+}
+message ApplicationCommandPermissionsList {
+  repeated ApplicationCommandPermissions Permissions = 1;
+}
+message ApplicationCommandPermissionsOutput {
+  GuildApplicationCommandPermissions permissions = 1;
+  optional string err = 2;
+}
+message ApplicationCommandsInput {
+  string appID = 1;
+  string guildID = 2;
+}
+message ApplicationCommandsOutput {
+  repeated ApplicationCommand cmd = 1;
+  optional string err = 2;
+}
+message ApplicationCreateInput {
+  Application ap = 1;
+}
+message ApplicationCreateOutput {
+  Application st = 1;
+  optional string err = 2;
+}
+message ApplicationDeleteInput {
+  string appID = 1;
+}
+message ApplicationDeleteOutput {
+  optional string err = 1;
+}
+message ApplicationInput {
+  string appID = 1;
+}
+message ApplicationOutput {
+  Application st = 1;
+  optional string err = 2;
+}
+message ApplicationRoleConnection {
+  string PlatformName = 1;
+  string PlatformUsername = 2;
+  map<string, string> Metadata = 3;
+}
+message ApplicationRoleConnectionMetadata {
+  int32 Type = 1;
+  string Key = 2;
+  string Name = 3;
+  map<string, string> NameLocalizations = 4;
+  string Description = 5;
+  map<string, string> DescriptionLocalizations = 6;
+}
+message ApplicationRoleConnectionMetadataInput {
+  string appID = 1;
+}
+message ApplicationRoleConnectionMetadataOutput {
+  repeated ApplicationRoleConnectionMetadata st = 1;
+  optional string err = 2;
+}
+message ApplicationRoleConnectionMetadataUpdateInput {
+  string appID = 1;
+  repeated ApplicationRoleConnectionMetadata metadata = 2;
+}
+message ApplicationRoleConnectionMetadataUpdateOutput {
+  repeated ApplicationRoleConnectionMetadata st = 1;
+  optional string err = 2;
+}
+message ApplicationUpdateInput {
+  string appID = 1;
+  Application ap = 2;
+}
+message ApplicationUpdateOutput {
+  Application st = 1;
+  optional string err = 2;
+}
+message ApplicationsInput {
+}
+message ApplicationsOutput {
+  repeated Application st = 1;
+  optional string err = 2;
+}
+message Asset {
+  int32 Type = 1;
+  string ID = 2;
+  string Name = 3;
+}
+message Assets {
+  string LargeImageID = 1;
+  string SmallImageID = 2;
+  string LargeText = 3;
+  string SmallText = 4;
+}
+message AuditLogChange {
+  google.protobuf.Any NewValue = 1;
+  google.protobuf.Any OldValue = 2;
+  string Key = 3;
+}
+message AuditLogEntry {
+  string TargetID = 1;
+  repeated AuditLogChange Changes = 2;
+  string UserID = 3;
+  string ID = 4;
+  int32 ActionType = 5;
+  AuditLogOptions Options = 6;
+  string Reason = 7;
+}
+message AuditLogOptions {
+  string DeleteMemberDays = 1;
+  string MembersRemoved = 2;
+  string ChannelID = 3;
+  string MessageID = 4;
+  string Count = 5;
+  string ID = 6;
+  string Type = 7;
+  string RoleName = 8;
+}
+message AutoModerationAction {
+  int32 Type = 1;
+  AutoModerationActionMetadata Metadata = 2;
+}
+message AutoModerationActionMetadata {
+  string ChannelID = 1;
+  int32 Duration = 2;
+}
+message AutoModerationRule {
+  string ID = 1;
+  string GuildID = 2;
+  string Name = 3;
+  string CreatorID = 4;
+  int32 EventType = 5;
+  int32 TriggerType = 6;
+  AutoModerationTriggerMetadata TriggerMetadata = 7;
+  repeated AutoModerationAction Actions = 8;
+  bool Enabled = 9;
+  repeated string ExemptRoles = 10;
+  repeated string ExemptChannels = 11;
+}
+message AutoModerationRuleCreateInput {
+  string guildID = 1;
+  AutoModerationRule rule = 2;
+}
+message AutoModerationRuleCreateOutput {
+  AutoModerationRule st = 1;
+  optional string err = 2;
+}
+message AutoModerationRuleDeleteInput {
+  string guildID = 1;
+  string ruleID = 2;
+}
+message AutoModerationRuleDeleteOutput {
+  optional string err = 1;
+}
+message AutoModerationRuleEditInput {
+  string guildID = 1;
+  string ruleID = 2;
+  AutoModerationRule rule = 3;
+}
+message AutoModerationRuleEditOutput {
+  AutoModerationRule st = 1;
+  optional string err = 2;
+}
+message AutoModerationRuleInput {
+  string guildID = 1;
+  string ruleID = 2;
+}
+message AutoModerationRuleOutput {
+  AutoModerationRule st = 1;
+  optional string err = 2;
+}
+message AutoModerationRulesInput {
+  string guildID = 1;
+}
+message AutoModerationRulesOutput {
+  repeated AutoModerationRule st = 1;
+  optional string err = 2;
+}
+message AutoModerationTriggerMetadata {
+  repeated string KeywordFilter = 1;
+  repeated string RegexPatterns = 2;
+  repeated uint32 Presets = 3;
+  repeated string AllowList = 4;
+  int32 MentionTotalLimit = 5;
+}
+message Channel {
+  string ID = 1;
+  string GuildID = 2;
+  string Name = 3;
+  string Topic = 4;
+  int32 Type = 5;
+  string LastMessageID = 6;
+  Time LastPinTimestamp = 7;
+  int32 MessageCount = 8;
+  int32 MemberCount = 9;
+  bool NSFW = 10;
+  string Icon = 11;
+  int32 Position = 12;
+  int32 Bitrate = 13;
+  repeated User Recipients = 14;
+  repeated Message Messages = 15;
+  repeated PermissionOverwrite PermissionOverwrites = 16;
+  int32 UserLimit = 17;
+  string ParentID = 18;
+  int32 RateLimitPerUser = 19;
+  string OwnerID = 20;
+  string ApplicationID = 21;
+  ThreadMetadata ThreadMetadata = 22;
+  ThreadMember Member = 23;
+  repeated ThreadMember Members = 24;
+  int32 Flags = 25;
+  repeated ForumTag AvailableTags = 26;
+  repeated string AppliedTags = 27;
+  ForumDefaultReaction DefaultReactionEmoji = 28;
+  int32 DefaultThreadRateLimitPerUser = 29;
+  int32 DefaultSortOrder = 30;
+  int32 DefaultForumLayout = 31;
+}
+message ChannelDeleteInput {
+  string channelID = 1;
+}
+message ChannelDeleteOutput {
+  Channel st = 1;
+  optional string err = 2;
+}
+message ChannelEdit {
+  string Name = 1;
+  string Topic = 2;
+  bool NSFW = 3;
+  int32 Position = 4;
+  int32 Bitrate = 5;
+  int32 UserLimit = 6;
+  repeated PermissionOverwrite PermissionOverwrites = 7;
+  string ParentID = 8;
+  int32 RateLimitPerUser = 9;
+  int32 Flags = 10;
+  int32 DefaultThreadRateLimitPerUser = 11;
+  bool Archived = 12;
+  int32 AutoArchiveDuration = 13;
+  bool Locked = 14;
+  bool Invitable = 15;
+  repeated ForumTag AvailableTags = 16;
+  ForumDefaultReaction DefaultReactionEmoji = 17;
+  int32 DefaultSortOrder = 18;
+  int32 DefaultForumLayout = 19;
+  repeated string AppliedTags = 20;
+}
+message ChannelEditComplexInput {
+  string channelID = 1;
+  ChannelEdit data = 2;
+}
+message ChannelEditComplexOutput {
+  Channel st = 1;
+  optional string err = 2;
+}
+message ChannelEditInput {
+  string channelID = 1;
+  ChannelEdit data = 2;
+}
+message ChannelEditOutput {
+  Channel st = 1;
+  optional string err = 2;
+}
+message ChannelFileSendInput {
+  string channelID = 1;
+  string name = 2;
+  Reader r = 3;
+}
+message ChannelFileSendOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelFileSendWithMessageInput {
+  string channelID = 1;
+  string content = 2;
+  string name = 3;
+  Reader r = 4;
+}
+message ChannelFileSendWithMessageOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelFollow {
+  string ChannelID = 1;
+  string WebhookID = 2;
+}
+message ChannelInput {
+  string channelID = 1;
+}
+message ChannelInviteCreateInput {
+  string channelID = 1;
+  Invite i = 2;
+}
+message ChannelInviteCreateOutput {
+  Invite st = 1;
+  optional string err = 2;
+}
+message ChannelInvitesInput {
+  string channelID = 1;
+}
+message ChannelInvitesOutput {
+  repeated Invite st = 1;
+  optional string err = 2;
+}
+message ChannelMessageCrosspostInput {
+  string channelID = 1;
+  string messageID = 2;
+}
+message ChannelMessageCrosspostOutput {
+  Message st = 1;
+  optional string err = 2;
+}
+message ChannelMessageDeleteInput {
+  string channelID = 1;
+  string messageID = 2;
+}
+message ChannelMessageDeleteOutput {
+  optional string err = 1;
+}
+message ChannelMessageEditComplexInput {
+  MessageEdit m = 1;
+}
+message ChannelMessageEditComplexOutput {
+  Message st = 1;
+  optional string err = 2;
+}
+message ChannelMessageEditEmbedInput {
+  string channelID = 1;
+  string messageID = 2;
+  MessageEmbed embed = 3;
+}
+message ChannelMessageEditEmbedOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageEditEmbedsInput {
+  string channelID = 1;
+  string messageID = 2;
+  repeated MessageEmbed embeds = 3;
+}
+message ChannelMessageEditEmbedsOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageEditInput {
+  string channelID = 1;
+  string messageID = 2;
+  string content = 3;
+}
+message ChannelMessageEditOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageInput {
+  string channelID = 1;
+  string messageID = 2;
+}
+message ChannelMessageOutput {
+  Message st = 1;
+  optional string err = 2;
+}
+message ChannelMessagePinInput {
+  string channelID = 1;
+  string messageID = 2;
+}
+message ChannelMessagePinOutput {
+  optional string err = 1;
+}
+message ChannelMessageSendComplexInput {
+  string channelID = 1;
+  MessageSend data = 2;
+}
+message ChannelMessageSendComplexOutput {
+  Message st = 1;
+  optional string err = 2;
+}
+message ChannelMessageSendEmbedInput {
+  string channelID = 1;
+  MessageEmbed embed = 2;
+}
+message ChannelMessageSendEmbedOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageSendEmbedReplyInput {
+  string channelID = 1;
+  MessageEmbed embed = 2;
+  MessageReference reference = 3;
+}
+message ChannelMessageSendEmbedReplyOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageSendEmbedsInput {
+  string channelID = 1;
+  repeated MessageEmbed embeds = 2;
+}
+message ChannelMessageSendEmbedsOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageSendEmbedsReplyInput {
+  string channelID = 1;
+  repeated MessageEmbed embeds = 2;
+  MessageReference reference = 3;
+}
+message ChannelMessageSendEmbedsReplyOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageSendInput {
+  string channelID = 1;
+  string content = 2;
+}
+message ChannelMessageSendOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageSendReplyInput {
+  string channelID = 1;
+  string content = 2;
+  MessageReference reference = 3;
+}
+message ChannelMessageSendReplyOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageSendTTSInput {
+  string channelID = 1;
+  string content = 2;
+}
+message ChannelMessageSendTTSOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ChannelMessageUnpinInput {
+  string channelID = 1;
+  string messageID = 2;
+}
+message ChannelMessageUnpinOutput {
+  optional string err = 1;
+}
+message ChannelMessagesBulkDeleteInput {
+  string channelID = 1;
+  repeated string messages = 2;
+}
+message ChannelMessagesBulkDeleteOutput {
+  optional string err = 1;
+}
+message ChannelMessagesInput {
+  string channelID = 1;
+  int32 limit = 2;
+  string beforeID = 3;
+  string afterID = 4;
+  string aroundID = 5;
+}
+message ChannelMessagesOutput {
+  repeated Message st = 1;
+  optional string err = 2;
+}
+message ChannelMessagesPinnedInput {
+  string channelID = 1;
+}
+message ChannelMessagesPinnedOutput {
+  repeated Message st = 1;
+  optional string err = 2;
+}
+message ChannelNewsFollowInput {
+  string channelID = 1;
+  string targetID = 2;
+}
+message ChannelNewsFollowOutput {
+  ChannelFollow st = 1;
+  optional string err = 2;
+}
+message ChannelOutput {
+  Channel st = 1;
+  optional string err = 2;
+}
+message ChannelPermissionDeleteInput {
+  string channelID = 1;
+  string targetID = 2;
+}
+message ChannelPermissionDeleteOutput {
+  optional string err = 1;
+}
+message ChannelPermissionSetInput {
+  string channelID = 1;
+  string targetID = 2;
+  int32 targetType = 3;
+  int64 allow = 4;
+  int64 deny = 5;
+}
+message ChannelPermissionSetOutput {
+  optional string err = 1;
+}
+message ChannelTypingInput {
+  string channelID = 1;
+}
+message ChannelTypingOutput {
+  optional string err = 1;
+}
+message ChannelVoiceJoinManualInput {
+  string gID = 1;
+  string cID = 2;
+  bool mute = 3;
+  bool deaf = 4;
+}
+message ChannelVoiceJoinManualOutput {
+  optional string err = 1;
+}
+message ChannelWebhooksInput {
+  string channelID = 1;
+}
+message ChannelWebhooksOutput {
+  repeated Webhook st = 1;
+  optional string err = 2;
+}
+message ClientStatus {
+  string Desktop = 1;
+  string Mobile = 2;
+  string Web = 3;
+}
+message Emoji {
+  string ID = 1;
+  string Name = 2;
+  repeated string Roles = 3;
+  User User = 4;
+  bool RequireColons = 5;
+  bool Managed = 6;
+  bool Animated = 7;
+  bool Available = 8;
+}
+message EmojiParams {
+  string Name = 1;
+  string Image = 2;
+  repeated string Roles = 3;
+}
+message File {
+  string Name = 1;
+  string ContentType = 2;
+  Reader Reader = 3;
+}
+message FollowupMessageCreateInput {
+  Interaction interaction = 1;
+  bool wait = 2;
+  WebhookParams data = 3;
+}
+message FollowupMessageCreateOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message FollowupMessageDeleteInput {
+  Interaction interaction = 1;
+  string messageID = 2;
+}
+message FollowupMessageDeleteOutput {
+  optional string field1 = 1;
+}
+message FollowupMessageEditInput {
+  Interaction interaction = 1;
+  string messageID = 2;
+  WebhookEdit data = 3;
+}
+message FollowupMessageEditOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message ForumDefaultReaction {
+  string EmojiID = 1;
+  string EmojiName = 2;
+}
+message ForumTag {
+  string ID = 1;
+  string Name = 2;
+  bool Moderated = 3;
+  string EmojiID = 4;
+  string EmojiName = 5;
+}
+message ForumThreadStartComplexInput {
+  string channelID = 1;
+  ThreadStart threadData = 2;
+  MessageSend messageData = 3;
+}
+message ForumThreadStartComplexOutput {
+  Channel th = 1;
+  optional string err = 2;
+}
+message ForumThreadStartEmbedInput {
+  string channelID = 1;
+  string name = 2;
+  int32 archiveDuration = 3;
+  MessageEmbed embed = 4;
+}
+message ForumThreadStartEmbedOutput {
+  Channel th = 1;
+  optional string err = 2;
+}
+message ForumThreadStartEmbedsInput {
+  string channelID = 1;
+  string name = 2;
+  int32 archiveDuration = 3;
+  repeated MessageEmbed embeds = 4;
+}
+message ForumThreadStartEmbedsOutput {
+  Channel th = 1;
+  optional string err = 2;
+}
+message ForumThreadStartInput {
+  string channelID = 1;
+  string name = 2;
+  int32 archiveDuration = 3;
+  string content = 4;
+}
+message ForumThreadStartOutput {
+  Channel th = 1;
+  optional string err = 2;
+}
+message GatewayBotInput {
+}
+message GatewayBotOutput {
+  GatewayBotResponse st = 1;
+  optional string err = 2;
+}
+message GatewayBotResponse {
+  string URL = 1;
+  int32 Shards = 2;
+  SessionInformation SessionStartLimit = 3;
+}
+message GatewayInput {
+}
+message GatewayOutput {
+  string gateway = 1;
+  optional string err = 2;
+}
+message Guild {
+  string ID = 1;
+  string Name = 2;
+  string Icon = 3;
+  string Region = 4;
+  string AfkChannelID = 5;
+  string OwnerID = 6;
+  bool Owner = 7;
+  Time JoinedAt = 8;
+  string DiscoverySplash = 9;
+  string Splash = 10;
+  int32 AfkTimeout = 11;
+  int32 MemberCount = 12;
+  int32 VerificationLevel = 13;
+  bool Large = 14;
+  int32 DefaultMessageNotifications = 15;
+  repeated Role Roles = 16;
+  repeated Emoji Emojis = 17;
+  repeated Sticker Stickers = 18;
+  repeated Member Members = 19;
+  repeated Presence Presences = 20;
+  int32 MaxPresences = 21;
+  int32 MaxMembers = 22;
+  repeated Channel Channels = 23;
+  repeated Channel Threads = 24;
+  repeated VoiceState VoiceStates = 25;
+  bool Unavailable = 26;
+  int32 ExplicitContentFilter = 27;
+  int32 NSFWLevel = 28;
+  repeated string Features = 29;
+  int32 MfaLevel = 30;
+  string ApplicationID = 31;
+  bool WidgetEnabled = 32;
+  string WidgetChannelID = 33;
+  string SystemChannelID = 34;
+  int32 SystemChannelFlags = 35;
+  string RulesChannelID = 36;
+  string VanityURLCode = 37;
+  string Description = 38;
+  string Banner = 39;
+  int32 PremiumTier = 40;
+  int32 PremiumSubscriptionCount = 41;
+  string PreferredLocale = 42;
+  string PublicUpdatesChannelID = 43;
+  int32 MaxVideoChannelUsers = 44;
+  int32 ApproximateMemberCount = 45;
+  int32 ApproximatePresenceCount = 46;
+  int64 Permissions = 47;
+  repeated StageInstance StageInstances = 48;
+}
+message GuildApplicationCommandPermissions {
+  string ID = 1;
+  string ApplicationID = 2;
+  string GuildID = 3;
+  repeated ApplicationCommandPermissions Permissions = 4;
+}
+message GuildApplicationCommandsPermissionsInput {
+  string appID = 1;
+  string guildID = 2;
+}
+message GuildApplicationCommandsPermissionsOutput {
+  repeated GuildApplicationCommandPermissions permissions = 1;
+  optional string err = 2;
+}
+message GuildAuditLog {
+  repeated Webhook Webhooks = 1;
+  repeated User Users = 2;
+  repeated AuditLogEntry AuditLogEntries = 3;
+  repeated Integration Integrations = 4;
+}
+message GuildAuditLogInput {
+  string guildID = 1;
+  string userID = 2;
+  string beforeID = 3;
+  int32 actionType = 4;
+  int32 limit = 5;
+}
+message GuildAuditLogOutput {
+  GuildAuditLog st = 1;
+  optional string err = 2;
+}
+message GuildBan {
+  string Reason = 1;
+  User User = 2;
+}
+message GuildBanCreateInput {
+  string guildID = 1;
+  string userID = 2;
+  int32 days = 3;
+}
+message GuildBanCreateOutput {
+  optional string err = 1;
+}
+message GuildBanCreateWithReasonInput {
+  string guildID = 1;
+  string userID = 2;
+  string reason = 3;
+  int32 days = 4;
+}
+message GuildBanCreateWithReasonOutput {
+  optional string err = 1;
+}
+message GuildBanDeleteInput {
+  string guildID = 1;
+  string userID = 2;
+}
+message GuildBanDeleteOutput {
+  optional string err = 1;
+}
+message GuildBanInput {
+  string guildID = 1;
+  string userID = 2;
+}
+message GuildBanOutput {
+  GuildBan st = 1;
+  optional string err = 2;
+}
+message GuildBansInput {
+  string guildID = 1;
+  int32 limit = 2;
+  string beforeID = 3;
+  string afterID = 4;
+}
+message GuildBansOutput {
+  repeated GuildBan st = 1;
+  optional string err = 2;
+}
+message GuildChannelCreateComplexInput {
+  string guildID = 1;
+  GuildChannelCreateData data = 2;
+}
+message GuildChannelCreateComplexOutput {
+  Channel st = 1;
+  optional string err = 2;
+}
+message GuildChannelCreateData {
+  string Name = 1;
+  int32 Type = 2;
+  string Topic = 3;
+  int32 Bitrate = 4;
+  int32 UserLimit = 5;
+  int32 RateLimitPerUser = 6;
+  int32 Position = 7;
+  repeated PermissionOverwrite PermissionOverwrites = 8;
+  string ParentID = 9;
+  bool NSFW = 10;
+}
+message GuildChannelCreateInput {
+  string guildID = 1;
+  string name = 2;
+  int32 ctype = 3;
+}
+message GuildChannelCreateOutput {
+  Channel st = 1;
+  optional string err = 2;
+}
+message GuildChannelsInput {
+  string guildID = 1;
+}
+message GuildChannelsOutput {
+  repeated Channel st = 1;
+  optional string err = 2;
+}
+message GuildChannelsReorderInput {
+  string guildID = 1;
+  repeated Channel channels = 2;
+}
+message GuildChannelsReorderOutput {
+  optional string err = 1;
+}
+message GuildCreateInput {
+  string name = 1;
+}
+message GuildCreateOutput {
+  Guild st = 1;
+  optional string err = 2;
+}
+message GuildCreateWithTemplateInput {
+  string templateCode = 1;
+  string name = 2;
+  string icon = 3;
+}
+message GuildCreateWithTemplateOutput {
+  Guild st = 1;
+  optional string err = 2;
+}
+message GuildDeleteInput {
+  string guildID = 1;
+}
+message GuildDeleteOutput {
+  Guild st = 1;
+  optional string err = 2;
+}
+message GuildEditInput {
+  string guildID = 1;
+  GuildParams g = 2;
+}
+message GuildEditOutput {
+  Guild st = 1;
+  optional string err = 2;
+}
+message GuildEmbed {
+  bool Enabled = 1;
+  string ChannelID = 2;
+}
+message GuildEmbedEditInput {
+  string guildID = 1;
+  GuildEmbed data = 2;
+}
+message GuildEmbedEditOutput {
+  optional string err = 1;
+}
+message GuildEmbedInput {
+  string guildID = 1;
+}
+message GuildEmbedOutput {
+  GuildEmbed st = 1;
+  optional string err = 2;
+}
+message GuildEmojiCreateInput {
+  string guildID = 1;
+  EmojiParams data = 2;
+}
+message GuildEmojiCreateOutput {
+  Emoji emoji = 1;
+  optional string err = 2;
+}
+message GuildEmojiDeleteInput {
+  string guildID = 1;
+  string emojiID = 2;
+}
+message GuildEmojiDeleteOutput {
+  optional string err = 1;
+}
+message GuildEmojiEditInput {
+  string guildID = 1;
+  string emojiID = 2;
+  EmojiParams data = 3;
+}
+message GuildEmojiEditOutput {
+  Emoji emoji = 1;
+  optional string err = 2;
+}
+message GuildEmojiInput {
+  string guildID = 1;
+  string emojiID = 2;
+}
+message GuildEmojiOutput {
+  Emoji emoji = 1;
+  optional string err = 2;
+}
+message GuildEmojisInput {
+  string guildID = 1;
+}
+message GuildEmojisOutput {
+  repeated Emoji emoji = 1;
+  optional string err = 2;
+}
+message GuildIconInput {
+  string guildID = 1;
+}
+message GuildIconOutput {
+  Image img = 1;
+  optional string err = 2;
+}
+message GuildInput {
+  string guildID = 1;
+}
+message GuildIntegrationCreateInput {
+  string guildID = 1;
+  string integrationType = 2;
+  string integrationID = 3;
+}
+message GuildIntegrationCreateOutput {
+  optional string err = 1;
+}
+message GuildIntegrationDeleteInput {
+  string guildID = 1;
+  string integrationID = 2;
+}
+message GuildIntegrationDeleteOutput {
+  optional string err = 1;
+}
+message GuildIntegrationEditInput {
+  string guildID = 1;
+  string integrationID = 2;
+  int32 expireBehavior = 3;
+  int32 expireGracePeriod = 4;
+  bool enableEmoticons = 5;
+}
+message GuildIntegrationEditOutput {
+  optional string err = 1;
+}
+message GuildIntegrationsInput {
+  string guildID = 1;
+}
+message GuildIntegrationsOutput {
+  repeated Integration st = 1;
+  optional string err = 2;
+}
+message GuildInvitesInput {
+  string guildID = 1;
+}
+message GuildInvitesOutput {
+  repeated Invite st = 1;
+  optional string err = 2;
+}
+message GuildLeaveInput {
+  string guildID = 1;
+}
+message GuildLeaveOutput {
+  optional string err = 1;
+}
+message GuildMemberAddInput {
+  string guildID = 1;
+  string userID = 2;
+  GuildMemberAddParams data = 3;
+}
+message GuildMemberAddOutput {
+  optional string err = 1;
+}
+message GuildMemberAddParams {
+  string AccessToken = 1;
+  string Nick = 2;
+  repeated string Roles = 3;
+  bool Mute = 4;
+  bool Deaf = 5;
+}
+message GuildMemberDeafenInput {
+  string guildID = 1;
+  string userID = 2;
+  bool deaf = 3;
+}
+message GuildMemberDeafenOutput {
+  optional string err = 1;
+}
+message GuildMemberDeleteInput {
+  string guildID = 1;
+  string userID = 2;
+}
+message GuildMemberDeleteOutput {
+  optional string err = 1;
+}
+message GuildMemberDeleteWithReasonInput {
+  string guildID = 1;
+  string userID = 2;
+  string reason = 3;
+}
+message GuildMemberDeleteWithReasonOutput {
+  optional string err = 1;
+}
+message GuildMemberEditComplexInput {
+  string guildID = 1;
+  string userID = 2;
+  GuildMemberParams data = 3;
+}
+message GuildMemberEditComplexOutput {
+  Member st = 1;
+  optional string err = 2;
+}
+message GuildMemberEditInput {
+  string guildID = 1;
+  string userID = 2;
+  GuildMemberParams data = 3;
+}
+message GuildMemberEditOutput {
+  Member st = 1;
+  optional string err = 2;
+}
+message GuildMemberInput {
+  string guildID = 1;
+  string userID = 2;
+}
+message GuildMemberMoveInput {
+  string guildID = 1;
+  string userID = 2;
+  string channelID = 3;
+}
+message GuildMemberMoveOutput {
+  optional string err = 1;
+}
+message GuildMemberMuteInput {
+  string guildID = 1;
+  string userID = 2;
+  bool mute = 3;
+}
+message GuildMemberMuteOutput {
+  optional string err = 1;
+}
+message GuildMemberNicknameInput {
+  string guildID = 1;
+  string userID = 2;
+  string nickname = 3;
+}
+message GuildMemberNicknameOutput {
+  optional string err = 1;
+}
+message GuildMemberOutput {
+  Member st = 1;
+  optional string err = 2;
+}
+message GuildMemberParams {
+  string Nick = 1;
+  repeated string Roles = 2;
+  string ChannelID = 3;
+  bool Mute = 4;
+  bool Deaf = 5;
+  Time CommunicationDisabledUntil = 6;
+}
+message GuildMemberRoleAddInput {
+  string guildID = 1;
+  string userID = 2;
+  string roleID = 3;
+}
+message GuildMemberRoleAddOutput {
+  optional string err = 1;
+}
+message GuildMemberRoleRemoveInput {
+  string guildID = 1;
+  string userID = 2;
+  string roleID = 3;
+}
+message GuildMemberRoleRemoveOutput {
+  optional string err = 1;
+}
+message GuildMemberTimeoutInput {
+  string guildID = 1;
+  string userID = 2;
+  Time until = 3;
+}
+message GuildMemberTimeoutOutput {
+  optional string err = 1;
+}
+message GuildMembersInput {
+  string guildID = 1;
+  string after = 2;
+  int32 limit = 3;
+}
+message GuildMembersOutput {
+  repeated Member st = 1;
+  optional string err = 2;
+}
+message GuildMembersSearchInput {
+  string guildID = 1;
+  string query = 2;
+  int32 limit = 3;
+}
+message GuildMembersSearchOutput {
+  repeated Member st = 1;
+  optional string err = 2;
+}
+message GuildOutput {
+  Guild st = 1;
+  optional string err = 2;
+}
+message GuildParams {
+  string Name = 1;
+  string Region = 2;
+  int32 VerificationLevel = 3;
+  int32 DefaultMessageNotifications = 4;
+  int32 ExplicitContentFilter = 5;
+  string AfkChannelID = 6;
+  int32 AfkTimeout = 7;
+  string Icon = 8;
+  string OwnerID = 9;
+  string Splash = 10;
+  string DiscoverySplash = 11;
+  string Banner = 12;
+  string SystemChannelID = 13;
+  int32 SystemChannelFlags = 14;
+  string RulesChannelID = 15;
+  string PublicUpdatesChannelID = 16;
+  string PreferredLocale = 17;
+  repeated string Features = 18;
+  string Description = 19;
+  bool PremiumProgressBarEnabled = 20;
+}
+message GuildPreview {
+  string ID = 1;
+  string Name = 2;
+  string Icon = 3;
+  string Splash = 4;
+  string DiscoverySplash = 5;
+  repeated Emoji Emojis = 6;
+  repeated string Features = 7;
+  int32 ApproximateMemberCount = 8;
+  int32 ApproximatePresenceCount = 9;
+  string Description = 10;
+}
+message GuildPreviewInput {
+  string guildID = 1;
+}
+message GuildPreviewOutput {
+  GuildPreview st = 1;
+  optional string err = 2;
+}
+message GuildPruneCountInput {
+  string guildID = 1;
+  uint32 days = 2;
+}
+message GuildPruneCountOutput {
+  uint32 count = 1;
+  optional string err = 2;
+}
+message GuildPruneInput {
+  string guildID = 1;
+  uint32 days = 2;
+}
+message GuildPruneOutput {
+  uint32 count = 1;
+  optional string err = 2;
+}
+message GuildRoleCreateInput {
+  string guildID = 1;
+  RoleParams data = 2;
+}
+message GuildRoleCreateOutput {
+  Role st = 1;
+  optional string err = 2;
+}
+message GuildRoleDeleteInput {
+  string guildID = 1;
+  string roleID = 2;
+}
+message GuildRoleDeleteOutput {
+  optional string err = 1;
+}
+message GuildRoleEditInput {
+  string guildID = 1;
+  string roleID = 2;
+  RoleParams data = 3;
+}
+message GuildRoleEditOutput {
+  Role st = 1;
+  optional string err = 2;
+}
+message GuildRoleReorderInput {
+  string guildID = 1;
+  repeated Role roles = 2;
+}
+message GuildRoleReorderOutput {
+  repeated Role st = 1;
+  optional string err = 2;
+}
+message GuildRolesInput {
+  string guildID = 1;
+}
+message GuildRolesOutput {
+  repeated Role st = 1;
+  optional string err = 2;
+}
+message GuildScheduledEvent {
+  string ID = 1;
+  string GuildID = 2;
+  string ChannelID = 3;
+  string CreatorID = 4;
+  string Name = 5;
+  string Description = 6;
+  Time ScheduledStartTime = 7;
+  Time ScheduledEndTime = 8;
+  int32 PrivacyLevel = 9;
+  int32 Status = 10;
+  int32 EntityType = 11;
+  string EntityID = 12;
+  GuildScheduledEventEntityMetadata EntityMetadata = 13;
+  User Creator = 14;
+  int32 UserCount = 15;
+  string Image = 16;
+}
+message GuildScheduledEventCreateInput {
+  string guildID = 1;
+  GuildScheduledEventParams event = 2;
+}
+message GuildScheduledEventCreateOutput {
+  GuildScheduledEvent st = 1;
+  optional string err = 2;
+}
+message GuildScheduledEventDeleteInput {
+  string guildID = 1;
+  string eventID = 2;
+}
+message GuildScheduledEventDeleteOutput {
+  optional string err = 1;
+}
+message GuildScheduledEventEditInput {
+  string guildID = 1;
+  string eventID = 2;
+  GuildScheduledEventParams event = 3;
+}
+message GuildScheduledEventEditOutput {
+  GuildScheduledEvent st = 1;
+  optional string err = 2;
+}
+message GuildScheduledEventEntityMetadata {
+  string Location = 1;
+}
+message GuildScheduledEventInput {
+  string guildID = 1;
+  string eventID = 2;
+  bool userCount = 3;
+}
+message GuildScheduledEventOutput {
+  GuildScheduledEvent st = 1;
+  optional string err = 2;
+}
+message GuildScheduledEventParams {
+  string ChannelID = 1;
+  string Name = 2;
+  string Description = 3;
+  Time ScheduledStartTime = 4;
+  Time ScheduledEndTime = 5;
+  int32 PrivacyLevel = 6;
+  int32 Status = 7;
+  int32 EntityType = 8;
+  GuildScheduledEventEntityMetadata EntityMetadata = 9;
+  string Image = 10;
+}
+message GuildScheduledEventUser {
+  string GuildScheduledEventID = 1;
+  User User = 2;
+  Member Member = 3;
+}
+message GuildScheduledEventUsersInput {
+  string guildID = 1;
+  string eventID = 2;
+  int32 limit = 3;
+  bool withMember = 4;
+  string beforeID = 5;
+  string afterID = 6;
+}
+message GuildScheduledEventUsersOutput {
+  repeated GuildScheduledEventUser st = 1;
+  optional string err = 2;
+}
+message GuildScheduledEventsInput {
+  string guildID = 1;
+  bool userCount = 2;
+}
+message GuildScheduledEventsOutput {
+  repeated GuildScheduledEvent st = 1;
+  optional string err = 2;
+}
+message GuildSplashInput {
+  string guildID = 1;
+}
+message GuildSplashOutput {
+  Image img = 1;
+  optional string err = 2;
+}
+message GuildTemplate {
+  string Code = 1;
+  string Name = 2;
+  string Description = 3;
+  int32 UsageCount = 4;
+  string CreatorID = 5;
+  User Creator = 6;
+  Time CreatedAt = 7;
+  Time UpdatedAt = 8;
+  string SourceGuildID = 9;
+  Guild SerializedSourceGuild = 10;
+  bool IsDirty = 11;
+}
+message GuildTemplateCreateInput {
+  string guildID = 1;
+  GuildTemplateParams data = 2;
+}
+message GuildTemplateCreateOutput {
+  GuildTemplate st = 1;
+}
+message GuildTemplateDeleteInput {
+  string guildID = 1;
+  string templateCode = 2;
+}
+message GuildTemplateDeleteOutput {
+  optional string err = 1;
+}
+message GuildTemplateEditInput {
+  string guildID = 1;
+  string templateCode = 2;
+  GuildTemplateParams data = 3;
+}
+message GuildTemplateEditOutput {
+  GuildTemplate st = 1;
+  optional string err = 2;
+}
+message GuildTemplateInput {
+  string templateCode = 1;
+}
+message GuildTemplateOutput {
+  GuildTemplate st = 1;
+  optional string err = 2;
+}
+message GuildTemplateParams {
+  string Name = 1;
+  string Description = 2;
+}
+message GuildTemplateSyncInput {
+  string guildID = 1;
+  string templateCode = 2;
+}
+message GuildTemplateSyncOutput {
+  optional string err = 1;
+}
+message GuildTemplatesInput {
+  string guildID = 1;
+}
+message GuildTemplatesOutput {
+  repeated GuildTemplate st = 1;
+  optional string err = 2;
+}
+message GuildThreadsActiveInput {
+  string guildID = 1;
+}
+message GuildThreadsActiveOutput {
+  ThreadsList threads = 1;
+  optional string err = 2;
+}
+message GuildWebhooksInput {
+  string guildID = 1;
+}
+message GuildWebhooksOutput {
+  repeated Webhook st = 1;
+  optional string err = 2;
+}
+message GuildWithCountsInput {
+  string guildID = 1;
+}
+message GuildWithCountsOutput {
+  Guild st = 1;
+  optional string err = 2;
+}
+message HeartbeatLatencyInput {
+}
+message HeartbeatLatencyOutput {
+  int64 field1 = 1;
+}
+message Image {
+}
+message Integration {
+  string ID = 1;
+  string Name = 2;
+  string Type = 3;
+  bool Enabled = 4;
+  bool Syncing = 5;
+  string RoleID = 6;
+  bool EnableEmoticons = 7;
+  int32 ExpireBehavior = 8;
+  int32 ExpireGracePeriod = 9;
+  User User = 10;
+  IntegrationAccount Account = 11;
+  Time SyncedAt = 12;
+}
+message IntegrationAccount {
+  string ID = 1;
+  string Name = 2;
+}
+message Interaction {
+  string ID = 1;
+  string AppID = 2;
+  uint32 Type = 3;
+  InteractionData Data = 4;
+  string GuildID = 5;
+  string ChannelID = 6;
+  Message Message = 7;
+  int64 AppPermissions = 8;
+  Member Member = 9;
+  User User = 10;
+  string Locale = 11;
+  string GuildLocale = 12;
+  string Token = 13;
+  int32 Version = 14;
+}
+message InteractionData {
+}
+message InteractionRespondInput {
+  Interaction interaction = 1;
+  InteractionResponse resp = 2;
+}
+message InteractionRespondOutput {
+  optional string field1 = 1;
+}
+message InteractionResponse {
+  uint32 Type = 1;
+  InteractionResponseData Data = 2;
+}
+message InteractionResponseData {
+  bool TTS = 1;
+  string Content = 2;
+  repeated MessageComponent Components = 3;
+  repeated MessageEmbed Embeds = 4;
+  MessageAllowedMentions AllowedMentions = 5;
+  repeated File Files = 6;
+  int32 Flags = 7;
+  repeated ApplicationCommandOptionChoice Choices = 8;
+  string CustomID = 9;
+  string Title = 10;
+}
+message InteractionResponseDeleteInput {
+  Interaction interaction = 1;
+}
+message InteractionResponseDeleteOutput {
+  optional string field1 = 1;
+}
+message InteractionResponseEditInput {
+  Interaction interaction = 1;
+  WebhookEdit newresp = 2;
+}
+message InteractionResponseEditOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message InteractionResponseInput {
+  Interaction interaction = 1;
+}
+message InteractionResponseOutput {
+  Message field1 = 1;
+  optional string field2 = 2;
+}
+message Invite {
+  Guild Guild = 1;
+  Channel Channel = 2;
+  User Inviter = 3;
+  string Code = 4;
+  Time CreatedAt = 5;
+  int32 MaxAge = 6;
+  int32 Uses = 7;
+  int32 MaxUses = 8;
+  bool Revoked = 9;
+  bool Temporary = 10;
+  bool Unique = 11;
+  User TargetUser = 12;
+  uint32 TargetType = 13;
+  Application TargetApplication = 14;
+  int32 ApproximatePresenceCount = 15;
+  int32 ApproximateMemberCount = 16;
+  Time ExpiresAt = 17;
+}
+message InviteAcceptInput {
+  string inviteID = 1;
+}
+message InviteAcceptOutput {
+  Invite st = 1;
+  optional string err = 2;
+}
+message InviteComplexInput {
+  string inviteID = 1;
+  string guildScheduledEventID = 2;
+  bool withCounts = 3;
+  bool withExpiration = 4;
+}
+message InviteComplexOutput {
+  Invite st = 1;
+  optional string err = 2;
+}
+message InviteDeleteInput {
+  string inviteID = 1;
+}
+message InviteDeleteOutput {
+  Invite st = 1;
+  optional string err = 2;
+}
+message InviteInput {
+  string inviteID = 1;
+}
+message InviteOutput {
+  Invite st = 1;
+  optional string err = 2;
+}
+message InviteWithCountsInput {
+  string inviteID = 1;
+}
+message InviteWithCountsOutput {
+  Invite st = 1;
+  optional string err = 2;
+}
+message Member {
+  string GuildID = 1;
+  Time JoinedAt = 2;
+  string Nick = 3;
+  bool Deaf = 4;
+  bool Mute = 5;
+  string Avatar = 6;
+  User User = 7;
+  repeated string Roles = 8;
+  Time PremiumSince = 9;
+  bool Pending = 10;
+  int64 Permissions = 11;
+  Time CommunicationDisabledUntil = 12;
+}
+message Message {
+  string ID = 1;
+  string ChannelID = 2;
+  string GuildID = 3;
+  string Content = 4;
+  Time Timestamp = 5;
+  Time EditedTimestamp = 6;
+  repeated string MentionRoles = 7;
+  bool TTS = 8;
+  bool MentionEveryone = 9;
+  User Author = 10;
+  repeated MessageAttachment Attachments = 11;
+  repeated MessageComponent Components = 12;
+  repeated MessageEmbed Embeds = 13;
+  repeated User Mentions = 14;
+  repeated MessageReactions Reactions = 15;
+  bool Pinned = 16;
+  int32 Type = 17;
+  string WebhookID = 18;
+  Member Member = 19;
+  repeated Channel MentionChannels = 20;
+  MessageActivity Activity = 21;
+  MessageApplication Application = 22;
+  MessageReference MessageReference = 23;
+  Message ReferencedMessage = 24;
+  MessageInteraction Interaction = 25;
+  int32 Flags = 26;
+  Channel Thread = 27;
+  repeated Sticker StickerItems = 28;
+}
+message MessageActivity {
+  int32 Type = 1;
+  string PartyID = 2;
+}
+message MessageAllowedMentions {
+  repeated string Parse = 1;
+  repeated string Roles = 2;
+  repeated string Users = 3;
+  bool RepliedUser = 4;
+}
+message MessageApplication {
+  string ID = 1;
+  string CoverImage = 2;
+  string Description = 3;
+  string Icon = 4;
+  string Name = 5;
+}
+message MessageAttachment {
+  string ID = 1;
+  string URL = 2;
+  string ProxyURL = 3;
+  string Filename = 4;
+  string ContentType = 5;
+  int32 Width = 6;
+  int32 Height = 7;
+  int32 Size = 8;
+  bool Ephemeral = 9;
+}
+message MessageComponent {
+}
+message MessageEdit {
+  string Content = 1;
+  repeated MessageComponent Components = 2;
+  repeated MessageEmbed Embeds = 3;
+  MessageAllowedMentions AllowedMentions = 4;
+  int32 Flags = 5;
+  repeated File Files = 6;
+  repeated MessageAttachment Attachments = 7;
+  string ID = 8;
+  string Channel = 9;
+  MessageEmbed Embed = 10;
+}
+message MessageEmbed {
+  string URL = 1;
+  string Type = 2;
+  string Title = 3;
+  string Description = 4;
+  string Timestamp = 5;
+  int32 Color = 6;
+  MessageEmbedFooter Footer = 7;
+  MessageEmbedImage Image = 8;
+  MessageEmbedThumbnail Thumbnail = 9;
+  MessageEmbedVideo Video = 10;
+  MessageEmbedProvider Provider = 11;
+  MessageEmbedAuthor Author = 12;
+  repeated MessageEmbedField Fields = 13;
+}
+message MessageEmbedAuthor {
+  string URL = 1;
+  string Name = 2;
+  string IconURL = 3;
+  string ProxyIconURL = 4;
+}
+message MessageEmbedField {
+  string Name = 1;
+  string Value = 2;
+  bool Inline = 3;
+}
+message MessageEmbedFooter {
+  string Text = 1;
+  string IconURL = 2;
+  string ProxyIconURL = 3;
+}
+message MessageEmbedImage {
+  string URL = 1;
+  string ProxyURL = 2;
+  int32 Width = 3;
+  int32 Height = 4;
+}
+message MessageEmbedProvider {
+  string URL = 1;
+  string Name = 2;
+}
+message MessageEmbedThumbnail {
+  string URL = 1;
+  string ProxyURL = 2;
+  int32 Width = 3;
+  int32 Height = 4;
+}
+message MessageEmbedVideo {
+  string URL = 1;
+  int32 Width = 2;
+  int32 Height = 3;
+}
+message MessageInteraction {
+  string ID = 1;
+  uint32 Type = 2;
+  string Name = 3;
+  User User = 4;
+  Member Member = 5;
+}
+message MessageReactionAddInput {
+  string channelID = 1;
+  string messageID = 2;
+  string emojiID = 3;
+}
+message MessageReactionAddOutput {
+  optional string field1 = 1;
+}
+message MessageReactionRemoveInput {
+  string channelID = 1;
+  string messageID = 2;
+  string emojiID = 3;
+  string userID = 4;
+}
+message MessageReactionRemoveOutput {
+  optional string field1 = 1;
+}
+message MessageReactions {
+  int32 Count = 1;
+  bool Me = 2;
+  Emoji Emoji = 3;
+}
+message MessageReactionsInput {
+  string channelID = 1;
+  string messageID = 2;
+  string emojiID = 3;
+  int32 limit = 4;
+  string beforeID = 5;
+  string afterID = 6;
+}
+message MessageReactionsOutput {
+  repeated User st = 1;
+  optional string err = 2;
+}
+message MessageReactionsRemoveAllInput {
+  string channelID = 1;
+  string messageID = 2;
+}
+message MessageReactionsRemoveAllOutput {
+  optional string field1 = 1;
+}
+message MessageReactionsRemoveEmojiInput {
+  string channelID = 1;
+  string messageID = 2;
+  string emojiID = 3;
+}
+message MessageReactionsRemoveEmojiOutput {
+  optional string field1 = 1;
+}
+message MessageReference {
+  string MessageID = 1;
+  string ChannelID = 2;
+  string GuildID = 3;
+}
+message MessageSend {
+  string Content = 1;
+  repeated MessageEmbed Embeds = 2;
+  bool TTS = 3;
+  repeated MessageComponent Components = 4;
+  repeated File Files = 5;
+  MessageAllowedMentions AllowedMentions = 6;
+  MessageReference Reference = 7;
+  File File = 8;
+  MessageEmbed Embed = 9;
+}
+message MessageThreadStartComplexInput {
+  string channelID = 1;
+  string messageID = 2;
+  ThreadStart data = 3;
+}
+message MessageThreadStartComplexOutput {
+  Channel ch = 1;
+  optional string err = 2;
+}
+message MessageThreadStartInput {
+  string channelID = 1;
+  string messageID = 2;
+  string name = 3;
+  int32 archiveDuration = 4;
+}
+message MessageThreadStartOutput {
+  Channel ch = 1;
+  optional string err = 2;
+}
+message Party {
+  string ID = 1;
+  repeated int32 Size = 2;
+}
+message PermissionOverwrite {
+  string ID = 1;
+  int32 Type = 2;
+  int64 Deny = 3;
+  int64 Allow = 4;
+}
+message Presence {
+  User User = 1;
+  string Status = 2;
+  repeated Activity Activities = 3;
+  int32 Since = 4;
+  ClientStatus ClientStatus = 5;
+}
+message Reader {
+}
+message RequestGuildMembersBatchInput {
+  repeated string guildIDs = 1;
+  string query = 2;
+  int32 limit = 3;
+  string nonce = 4;
+  bool presences = 5;
+}
+message RequestGuildMembersBatchListInput {
+  repeated string guildIDs = 1;
+  repeated string userIDs = 2;
+  int32 limit = 3;
+  string nonce = 4;
+  bool presences = 5;
+}
+message RequestGuildMembersBatchListOutput {
+  optional string err = 1;
+}
+message RequestGuildMembersBatchOutput {
+  optional string err = 1;
+}
+message RequestGuildMembersInput {
+  string guildID = 1;
+  string query = 2;
+  int32 limit = 3;
+  string nonce = 4;
+  bool presences = 5;
+}
+message RequestGuildMembersListInput {
+  string guildID = 1;
+  repeated string userIDs = 2;
+  int32 limit = 3;
+  string nonce = 4;
+  bool presences = 5;
+}
+message RequestGuildMembersListOutput {
+  optional string field1 = 1;
+}
+message RequestGuildMembersOutput {
+  optional string field1 = 1;
+}
+message RequestInput {
+  string method = 1;
+  string urlStr = 2;
+  google.protobuf.Any data = 3;
+}
+message RequestOutput {
+  repeated uint32 response = 1;
+  optional string err = 2;
+}
+message RequestWithBucketIDInput {
+  string method = 1;
+  string urlStr = 2;
+  google.protobuf.Any data = 3;
+  string bucketID = 4;
+}
+message RequestWithBucketIDOutput {
+  repeated uint32 response = 1;
+  optional string err = 2;
+}
+message Role {
+  string ID = 1;
+  string Name = 2;
+  bool Managed = 3;
+  bool Mentionable = 4;
+  bool Hoist = 5;
+  int32 Color = 6;
+  int32 Position = 7;
+  int64 Permissions = 8;
+}
+message RoleParams {
+  string Name = 1;
+  int32 Color = 2;
+  bool Hoist = 3;
+  int64 Permissions = 4;
+  bool Mentionable = 5;
+}
+message Secrets {
+  string Join = 1;
+  string Spectate = 2;
+  string Match = 3;
+}
+message SessionInformation {
+  int32 Total = 1;
+  int32 Remaining = 2;
+  int32 ResetAfter = 3;
+  int32 MaxConcurrency = 4;
+}
+message StageInstance {
+  string ID = 1;
+  string GuildID = 2;
+  string ChannelID = 3;
+  string Topic = 4;
+  int32 PrivacyLevel = 5;
+  bool DiscoverableDisabled = 6;
+  string GuildScheduledEventID = 7;
+}
+message StageInstanceCreateInput {
+  StageInstanceParams data = 1;
+}
+message StageInstanceCreateOutput {
+  StageInstance si = 1;
+  optional string err = 2;
+}
+message StageInstanceDeleteInput {
+  string channelID = 1;
+}
+message StageInstanceDeleteOutput {
+  optional string err = 1;
+}
+message StageInstanceEditInput {
+  string channelID = 1;
+  StageInstanceParams data = 2;
+}
+message StageInstanceEditOutput {
+  StageInstance si = 1;
+  optional string err = 2;
+}
+message StageInstanceInput {
+  string channelID = 1;
+}
+message StageInstanceOutput {
+  StageInstance si = 1;
+  optional string err = 2;
+}
+message StageInstanceParams {
+  string ChannelID = 1;
+  string Topic = 2;
+  int32 PrivacyLevel = 3;
+  bool SendStartNotification = 4;
+}
+message Sticker {
+  string ID = 1;
+  string PackID = 2;
+  string Name = 3;
+  string Description = 4;
+  string Tags = 5;
+  int32 Type = 6;
+  int32 FormatType = 7;
+  bool Available = 8;
+  string GuildID = 9;
+  User User = 10;
+  int32 SortValue = 11;
+}
+message Team {
+  string ID = 1;
+  string Name = 2;
+  string Description = 3;
+  string Icon = 4;
+  string OwnerID = 5;
+  repeated TeamMember Members = 6;
+}
+message TeamMember {
+  User User = 1;
+  string TeamID = 2;
+  int32 MembershipState = 3;
+  repeated string Permissions = 4;
+}
+message ThreadJoinInput {
+  string id = 1;
+}
+message ThreadJoinOutput {
+  optional string field1 = 1;
+}
+message ThreadLeaveInput {
+  string id = 1;
+}
+message ThreadLeaveOutput {
+  optional string field1 = 1;
+}
+message ThreadMember {
+  string ID = 1;
+  string UserID = 2;
+  Time JoinTimestamp = 3;
+  int32 Flags = 4;
+}
+message ThreadMemberAddInput {
+  string threadID = 1;
+  string memberID = 2;
+}
+message ThreadMemberAddOutput {
+  optional string field1 = 1;
+}
+message ThreadMemberInput {
+  string threadID = 1;
+  string memberID = 2;
+}
+message ThreadMemberOutput {
+  ThreadMember member = 1;
+  optional string err = 2;
+}
+message ThreadMemberRemoveInput {
+  string threadID = 1;
+  string memberID = 2;
+}
+message ThreadMemberRemoveOutput {
+  optional string field1 = 1;
+}
+message ThreadMembersInput {
+  string threadID = 1;
+}
+message ThreadMembersOutput {
+  repeated ThreadMember members = 1;
+  optional string err = 2;
+}
+message ThreadMetadata {
+  bool Archived = 1;
+  int32 AutoArchiveDuration = 2;
+  Time ArchiveTimestamp = 3;
+  bool Locked = 4;
+  bool Invitable = 5;
+}
+message ThreadStart {
+  string Name = 1;
+  int32 AutoArchiveDuration = 2;
+  int32 Type = 3;
+  bool Invitable = 4;
+  int32 RateLimitPerUser = 5;
+  repeated string AppliedTags = 6;
+}
+message ThreadStartComplexInput {
+  string channelID = 1;
+  ThreadStart data = 2;
+}
+message ThreadStartComplexOutput {
+  Channel ch = 1;
+  optional string err = 2;
+}
+message ThreadStartInput {
+  string channelID = 1;
+  string name = 2;
+  int32 typ = 3;
+  int32 archiveDuration = 4;
+}
+message ThreadStartOutput {
+  Channel ch = 1;
+  optional string err = 2;
+}
+message ThreadsActiveInput {
+  string channelID = 1;
+}
+message ThreadsActiveOutput {
+  ThreadsList threads = 1;
+  optional string err = 2;
+}
+message ThreadsArchivedInput {
+  string channelID = 1;
+  Time before = 2;
+  int32 limit = 3;
+}
+message ThreadsArchivedOutput {
+  ThreadsList threads = 1;
+  optional string err = 2;
+}
+message ThreadsList {
+  repeated Channel Threads = 1;
+  repeated ThreadMember Members = 2;
+  bool HasMore = 3;
+}
+message ThreadsPrivateArchivedInput {
+  string channelID = 1;
+  Time before = 2;
+  int32 limit = 3;
+}
+message ThreadsPrivateArchivedOutput {
+  ThreadsList threads = 1;
+  optional string err = 2;
+}
+message ThreadsPrivateJoinedArchivedInput {
+  string channelID = 1;
+  Time before = 2;
+  int32 limit = 3;
+}
+message ThreadsPrivateJoinedArchivedOutput {
+  ThreadsList threads = 1;
+  optional string err = 2;
+}
+message Time {
+}
+message TimeStamps {
+  int64 EndTimestamp = 1;
+  int64 StartTimestamp = 2;
+}
+message UpdateGameStatusInput {
+  int32 idle = 1;
+  string name = 2;
+}
+message UpdateGameStatusOutput {
+  optional string err = 1;
+}
+message UpdateListeningStatusInput {
+  string name = 1;
+}
+message UpdateListeningStatusOutput {
+  optional string err = 1;
+}
+message UpdateStatusComplexInput {
+  UpdateStatusData usd = 1;
+}
+message UpdateStatusComplexOutput {
+  optional string err = 1;
+}
+message UpdateStatusData {
+  int32 IdleSince = 1;
+  repeated Activity Activities = 2;
+  bool AFK = 3;
+  string Status = 4;
+}
+message UpdateStreamingStatusInput {
+  int32 idle = 1;
+  string name = 2;
+  string url = 3;
+}
+message UpdateStreamingStatusOutput {
+  optional string err = 1;
+}
+message UpdateWatchStatusInput {
+  int32 idle = 1;
+  string name = 2;
+}
+message UpdateWatchStatusOutput {
+  optional string err = 1;
+}
+message User {
+  string ID = 1;
+  string Email = 2;
+  string Username = 3;
+  string Avatar = 4;
+  string Locale = 5;
+  string Discriminator = 6;
+  string Token = 7;
+  bool Verified = 8;
+  bool MFAEnabled = 9;
+  string Banner = 10;
+  int32 AccentColor = 11;
+  bool Bot = 12;
+  int32 PublicFlags = 13;
+  int32 PremiumType = 14;
+  bool System = 15;
+  int32 Flags = 16;
+}
+message UserApplicationRoleConnectionInput {
+  string appID = 1;
+}
+message UserApplicationRoleConnectionOutput {
+  ApplicationRoleConnection st = 1;
+  optional string err = 2;
+}
+message UserApplicationRoleConnectionUpdateInput {
+  string appID = 1;
+  ApplicationRoleConnection rconn = 2;
+}
+message UserApplicationRoleConnectionUpdateOutput {
+  ApplicationRoleConnection st = 1;
+  optional string err = 2;
+}
+message UserAvatarDecodeInput {
+  User u = 1;
+}
+message UserAvatarDecodeOutput {
+  Image img = 1;
+  optional string err = 2;
+}
+message UserAvatarInput {
+  string userID = 1;
+}
+message UserAvatarOutput {
+  Image img = 1;
+  optional string err = 2;
+}
+message UserChannelCreateInput {
+  string recipientID = 1;
+}
+message UserChannelCreateOutput {
+  Channel st = 1;
+  optional string err = 2;
+}
+message UserChannelPermissionsInput {
+  string userID = 1;
+  string channelID = 2;
+}
+message UserChannelPermissionsOutput {
+  int64 apermissions = 1;
+  optional string err = 2;
+}
+message UserConnection {
+  string ID = 1;
+  string Name = 2;
+  string Type = 3;
+  bool Revoked = 4;
+  repeated Integration Integrations = 5;
+}
+message UserConnectionsInput {
+}
+message UserConnectionsOutput {
+  repeated UserConnection conn = 1;
+  optional string err = 2;
+}
+message UserGuild {
+  string ID = 1;
+  string Name = 2;
+  string Icon = 3;
+  bool Owner = 4;
+  int64 Permissions = 5;
+  repeated string Features = 6;
+}
+message UserGuildMemberInput {
+  string guildID = 1;
+}
+message UserGuildMemberOutput {
+  Member st = 1;
+  optional string err = 2;
+}
+message UserGuildsInput {
+  int32 limit = 1;
+  string beforeID = 2;
+  string afterID = 3;
+}
+message UserGuildsOutput {
+  repeated UserGuild st = 1;
+  optional string err = 2;
+}
+message UserInput {
+  string userID = 1;
+}
+message UserOutput {
+  User st = 1;
+  optional string err = 2;
+}
+message UserUpdateInput {
+  string username = 1;
+  string avatar = 2;
+}
+message UserUpdateOutput {
+  User st = 1;
+  optional string err = 2;
+}
+message VoiceRegion {
+  string ID = 1;
+  string Name = 2;
+}
+message VoiceRegionsInput {
+}
+message VoiceRegionsOutput {
+  repeated VoiceRegion st = 1;
+  optional string err = 2;
+}
+message VoiceState {
+  string GuildID = 1;
+  string ChannelID = 2;
+  string UserID = 3;
+  Member Member = 4;
+  string SessionID = 5;
+  bool Deaf = 6;
+  bool Mute = 7;
+  bool SelfDeaf = 8;
+  bool SelfMute = 9;
+  bool SelfStream = 10;
+  bool SelfVideo = 11;
+  bool Suppress = 12;
+  Time RequestToSpeakTimestamp = 13;
+}
+message Webhook {
+  string ID = 1;
+  int32 Type = 2;
+  string GuildID = 3;
+  string ChannelID = 4;
+  User User = 5;
+  string Name = 6;
+  string Avatar = 7;
+  string Token = 8;
+  string ApplicationID = 9;
+}
+message WebhookCreateInput {
+  string channelID = 1;
+  string name = 2;
+  string avatar = 3;
+}
+message WebhookCreateOutput {
+  Webhook st = 1;
+  optional string err = 2;
+}
+message WebhookDeleteInput {
+  string webhookID = 1;
+}
+message WebhookDeleteOutput {
+  optional string err = 1;
+}
+message WebhookDeleteWithTokenInput {
+  string webhookID = 1;
+  string token = 2;
+}
+message WebhookDeleteWithTokenOutput {
+  Webhook st = 1;
+  optional string err = 2;
+}
+message WebhookEdit {
+  string Content = 1;
+  repeated MessageComponent Components = 2;
+  repeated MessageEmbed Embeds = 3;
+  repeated File Files = 4;
+  MessageAllowedMentions AllowedMentions = 5;
+}
+message WebhookEditInput {
+  string webhookID = 1;
+  string name = 2;
+  string avatar = 3;
+  string channelID = 4;
+}
+message WebhookEditOutput {
+  Role st = 1;
+  optional string err = 2;
+}
+message WebhookEditWithTokenInput {
+  string webhookID = 1;
+  string token = 2;
+  string name = 3;
+  string avatar = 4;
+}
+message WebhookEditWithTokenOutput {
+  Role st = 1;
+  optional string err = 2;
+}
+message WebhookExecuteInput {
+  string webhookID = 1;
+  string token = 2;
+  bool wait = 3;
+  WebhookParams data = 4;
+}
+message WebhookExecuteOutput {
+  Message st = 1;
+  optional string err = 2;
+}
+message WebhookInput {
+  string webhookID = 1;
+}
+message WebhookMessageDeleteInput {
+  string webhookID = 1;
+  string token = 2;
+  string messageID = 3;
+}
+message WebhookMessageDeleteOutput {
+  optional string err = 1;
+}
+message WebhookMessageEditInput {
+  string webhookID = 1;
+  string token = 2;
+  string messageID = 3;
+  WebhookEdit data = 4;
+}
+message WebhookMessageEditOutput {
+  Message st = 1;
+  optional string err = 2;
+}
+message WebhookMessageInput {
+  string webhookID = 1;
+  string token = 2;
+  string messageID = 3;
+}
+message WebhookMessageOutput {
+  Message message = 1;
+  optional string err = 2;
+}
+message WebhookOutput {
+  Webhook st = 1;
+  optional string err = 2;
+}
+message WebhookParams {
+  string Content = 1;
+  string Username = 2;
+  string AvatarURL = 3;
+  bool TTS = 4;
+  repeated File Files = 5;
+  repeated MessageComponent Components = 6;
+  repeated MessageEmbed Embeds = 7;
+  MessageAllowedMentions AllowedMentions = 8;
+  int32 Flags = 9;
+}
+message WebhookThreadExecuteInput {
+  string webhookID = 1;
+  string token = 2;
+  bool wait = 3;
+  string threadID = 4;
+  WebhookParams data = 5;
+}
+message WebhookThreadExecuteOutput {
+  Message st = 1;
+  optional string err = 2;
+}
+message WebhookWithTokenInput {
+  string webhookID = 1;
+  string token = 2;
+}
+message WebhookWithTokenOutput {
+  Webhook st = 1;
+  optional string err = 2;
+}
