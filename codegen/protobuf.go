@@ -245,7 +245,7 @@ func MessageFromFields(name string, fields []*types.Var) (*ProtobufMessage, erro
 	for idx, field := range fields {
 		fieldName := field.Name()
 		if fieldName == "" {
-			fieldName = fmt.Sprintf("Field%d", idx+1)
+			fieldName = fmt.Sprintf("field%d", idx+1)
 		}
 
 		fieldType, err := NewProtobufType(field.Type())
