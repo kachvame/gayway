@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-kafka/v2/pkg/kafka"
 	"github.com/kachvame/gayway/gateway"
 	"github.com/kachvame/gayway/kv/etcd"
 	gaywayLog "github.com/kachvame/gayway/log"
@@ -15,6 +17,7 @@ func run() error {
 	etcdAddress := os.Getenv("GAYWAY_ETCD_ADDRESS")
 	etcdPassword := os.Getenv("GAYWAY_ETCD_PASSWORD")
 	etcdUsername := os.Getenv("GAYWAY_ETCD_USERNAME")
+	kafkaAddress := os.Getenv("GAYWAY_KAFKA_ADDRESS")
 	logLevel := os.Getenv("GAYWAY_LOG_LEVEL")
 	dev := os.Getenv("GAYWAY_DEV")
 
@@ -34,12 +37,24 @@ func run() error {
 		return fmt.Errorf("failed to make etcd store: %w", err)
 	}
 
+	publisher, err := kafka.NewPublisher(
+		kafka.PublisherConfig{
+			Brokers:   strings.Split(kafkaAddress, ","),
+			Marshaler: kafka.DefaultMarshaler{},
+		},
+		watermill.NewStdLogger(false, false),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to create kafka publisher: %w", err)
+	}
+
 	gatewayLogger := log.With().Str("component", "gateway").Logger()
 
 	bot, err := gateway.NewGateway(gateway.Config{
-		Token:  discordToken,
-		Store:  store,
-		Logger: gatewayLogger,
+		Token:     discordToken,
+		Store:     store,
+		Logger:    gatewayLogger,
+		Publisher: publisher,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to start gateway: %w", err)

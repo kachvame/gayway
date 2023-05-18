@@ -3,6 +3,8 @@ package gateway
 import (
 	"context"
 	"fmt"
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/bwmarrin/discordgo"
 	"github.com/gorilla/websocket"
 	"github.com/kachvame/gayway/kv"
@@ -22,15 +24,17 @@ const (
 )
 
 type Config struct {
-	Token  string
-	Store  kv.Store
-	Logger zerolog.Logger
+	Token     string
+	Store     kv.Store
+	Logger    zerolog.Logger
+	Publisher message.Publisher
 }
 
 type Gateway struct {
-	session *discordgo.Session
-	store   kv.Store
-	logger  zerolog.Logger
+	session   *discordgo.Session
+	store     kv.Store
+	logger    zerolog.Logger
+	publisher message.Publisher
 }
 
 func NewGateway(config Config) (*Gateway, error) {
@@ -39,12 +43,29 @@ func NewGateway(config Config) (*Gateway, error) {
 		return nil, fmt.Errorf("failed to initialize discord session: %w", err)
 	}
 
-	gateway := &Gateway{session: session, store: config.Store, logger: config.Logger}
+	gateway := &Gateway{
+		session:   session,
+		store:     config.Store,
+		logger:    config.Logger,
+		publisher: config.Publisher,
+	}
 
 	session.AddHandler(gateway.Ready)
 	session.AddHandler(gateway.Resumed)
+	session.AddHandler(gateway.OnEvent)
 
 	return gateway, nil
+}
+
+func (gateway *Gateway) OnEvent(_ *discordgo.Session, event *discordgo.Event) {
+	err := gateway.publisher.Publish(event.Type, message.NewMessage(
+		watermill.NewULID(),
+		message.Payload(event.RawData),
+	))
+	if err != nil {
+		gateway.logger.Error().Err(err).Msg("Error occurred during publishing")
+		return
+	}
 }
 
 func (gateway *Gateway) Start() error {
