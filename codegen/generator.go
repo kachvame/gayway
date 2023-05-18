@@ -9,12 +9,13 @@ import (
 
 var (
 	ignoredMethods = map[string]struct{}{
-		"AddHandler":       {},
-		"AddHandlerOnce":   {},
-		"Open":             {},
-		"Close":            {},
-		"CloseWithCode":    {},
-		"ChannelVoiceJoin": {},
+		"AddHandler":              {},
+		"AddHandlerOnce":          {},
+		"Open":                    {},
+		"Close":                   {},
+		"CloseWithCode":           {},
+		"ChannelVoiceJoin":        {},
+		"RequestWithLockedBucket": {},
 	}
 )
 
