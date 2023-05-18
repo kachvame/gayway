@@ -4,15 +4,17 @@ import (
 	"fmt"
 	"github.com/rs/zerolog"
 	"go/types"
+	"os"
 )
 
 var (
 	ignoredMethods = map[string]struct{}{
-		"AddHandler":     {},
-		"AddHandlerOnce": {},
-		"Open":           {},
-		"Close":          {},
-		"CloseWithCode":  {},
+		"AddHandler":       {},
+		"AddHandlerOnce":   {},
+		"Open":             {},
+		"Close":            {},
+		"CloseWithCode":    {},
+		"ChannelVoiceJoin": {},
 	}
 )
 
@@ -31,8 +33,6 @@ func NewGenerator(config *Config) *Generator {
 }
 
 func (generator *Generator) Run() error {
-	generator.logger.Info().Msg("Hello world")
-
 	discordgoPackage, err := generator.loadDiscordgoPackage()
 	if err != nil {
 		return fmt.Errorf("failed to load discordgo package: %w", err)
@@ -47,16 +47,62 @@ func (generator *Generator) Run() error {
 
 	generator.logger.Debug().Msg("found Session struct")
 
-	VisitExportedMethods(sessionStruct, func(method *types.Func) {
+	protobufBuilder := NewProtobufBuilder("Gayway")
+
+	err = VisitExportedMethods(sessionStruct, func(method *types.Func) error {
 		methodName := method.Name()
 		if _, isIgnored := ignoredMethods[methodName]; isIgnored {
 			generator.logger.Debug().Str("method", methodName).Msg("ignoring method")
 
-			return
+			return nil
 		}
 
 		generator.logger.Debug().Str("method", methodName).Msg("visiting method")
+
+		methodSignature := method.Type().(*types.Signature)
+
+		paramTypes := tupleElements(methodSignature.Params())
+		// NOTE: discordgo has a middleware-type variadic argument for all
+		//       methods. We can't serialize them, so we need to ignore them.
+		if methodSignature.Variadic() {
+			paramTypes = paramTypes[:len(paramTypes)-1]
+		}
+
+		params, err := MessageFromFields(fmt.Sprintf("%sInput", methodName), paramTypes)
+		if err != nil {
+			return fmt.Errorf("failed to build protobuf params type: %w", err)
+		}
+
+		result, err := MessageFromFields(fmt.Sprintf("%sOutput", methodName), tupleElements(methodSignature.Results()))
+		if err != nil {
+			return fmt.Errorf("failed to build protobuf result type: %w", err)
+		}
+
+		protobufBuilder.AddMethod(methodName, []ProtobufType{params}, result)
+
+		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("failed to build protobuf schema: %w", err)
+	}
+
+	proto := protobufBuilder.Build()
+	if err = os.WriteFile("output.proto", []byte(proto), 0644); err != nil {
+		return fmt.Errorf("failed to write output: %w", err)
+	}
+
+	generator.logger.Info().Msg("Wrote output to output.proto")
 
 	return nil
+}
+
+func tupleElements(tuple *types.Tuple) []*types.Var {
+	elements := make([]*types.Var, 0, tuple.Len())
+	_ = VisitTupleElements(tuple, func(_ int, variable *types.Var) error {
+		elements = append(elements, variable)
+
+		return nil
+	})
+
+	return elements
 }
