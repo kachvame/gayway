@@ -16,4 +16,4 @@ docker_build_with_restart(
 
 k8s_yaml(namespace_inject(kustomize("./manifests"), "kekboard"))
 
-k8s_resource(workload="gayway", resource_deps=["etcd", "kafka"])
+k8s_resource(workload="gayway", resource_deps=["etcd", "kafka"], labels=["services"])
