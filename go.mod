@@ -13,6 +13,7 @@ require (
 
 require (
 	github.com/Shopify/sarama v1.32.0 // indirect
+	github.com/alexdrl/zerowater v0.0.3 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
