@@ -5,15 +5,17 @@ go 1.20
 require (
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/ThreeDotsLabs/watermill-kafka/v2 v2.2.2
+	github.com/alexdrl/zerowater v0.0.3
 	github.com/bwmarrin/discordgo v0.27.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/rs/zerolog v1.29.1
 	go.etcd.io/etcd/client/v3 v3.5.9
+	go.uber.org/multierr v1.6.0
+	golang.org/x/tools v0.9.1
 )
 
 require (
 	github.com/Shopify/sarama v1.32.0 // indirect
-	github.com/alexdrl/zerowater v0.0.3 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -48,12 +50,12 @@ require (
 	go.opentelemetry.io/otel v1.6.1 // indirect
 	go.opentelemetry.io/otel/trace v1.6.1 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
-	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064 // indirect
-	golang.org/x/net v0.0.0-20220325170049-de3da57026de // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/mod v0.10.0 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
 	google.golang.org/grpc v1.41.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
