@@ -22,8 +22,6 @@ func run() error {
 		logLevel = "info"
 	}
 
-	fmt.Println(dev)
-
 	if err := gaywayLog.SetupLogger(logLevel, dev == "true"); err != nil {
 		return fmt.Errorf("failed to set up logging: %w", err)
 	}
