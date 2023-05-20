@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ThreeDotsLabs/watermill-kafka/v2/pkg/kafka"
+	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/alexdrl/zerowater"
 	"github.com/kachvame/gayway/gateway"
 	"github.com/kachvame/gayway/kv/etcd"
@@ -43,8 +44,10 @@ func run() error {
 
 	publisher, err := kafka.NewPublisher(
 		kafka.PublisherConfig{
-			Brokers:   strings.Split(kafkaAddress, ","),
-			Marshaler: kafka.DefaultMarshaler{},
+			Brokers: strings.Split(kafkaAddress, ","),
+			Marshaler: kafka.NewWithPartitioningMarshaler(func(topic string, msg *message.Message) (string, error) {
+				return msg.Metadata.Get("partition"), nil
+			}),
 		},
 		watermillLogger,
 	)

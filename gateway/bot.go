@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
@@ -58,11 +59,22 @@ func NewGateway(config Config) (*Gateway, error) {
 }
 
 func (gateway *Gateway) OnEvent(_ *discordgo.Session, event *discordgo.Event) {
-	err := gateway.publisher.Publish(event.Type, message.NewMessage(
+	msg := message.NewMessage(
 		watermill.NewULID(),
 		message.Payload(event.RawData),
-	))
-	if err != nil {
+	)
+
+	var rawData map[string]any
+	if err := json.Unmarshal(event.RawData, &rawData); err != nil {
+		gateway.logger.Error().Err(err).Msg("Error occurred during unmarshalling event")
+	}
+
+	guildID, ok := rawData["guild_id"].(string)
+	if ok {
+		msg.Metadata.Set("partition", guildID)
+	}
+
+	if err := gateway.publisher.Publish("DISCORD_EVENTS", msg); err != nil {
 		gateway.logger.Error().Err(err).Msg("Error occurred during publishing")
 		return
 	}
