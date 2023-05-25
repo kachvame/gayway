@@ -24,12 +24,32 @@ func (builder *ProtobufBuilder) AddMethod(name string, argument ProtobufType, re
 func (builder *ProtobufBuilder) Serialize() string {
 	outputBuilder := &strings.Builder{}
 
-	// Always import `any`
 	outputBuilder.WriteString(`syntax = "proto3";`)
 	outputBuilder.WriteRune('\n')
+	// Always import `any`
 	outputBuilder.WriteString(`import "google/protobuf/any.proto";`)
 	outputBuilder.WriteRune('\n')
 
+	// Serialize service
+	outputBuilder.WriteString("service ")
+	outputBuilder.WriteString(builder.Name)
+	outputBuilder.WriteString(" {\n")
+
+	for _, method := range builder.Methods {
+		outputBuilder.WriteString("  rpc ")
+		outputBuilder.WriteString(method.Name)
+
+		outputBuilder.WriteRune('(')
+		outputBuilder.WriteString(method.Argument.Reference())
+		outputBuilder.WriteRune(')')
+
+		outputBuilder.WriteString(" returns (")
+		outputBuilder.WriteString(method.ReturnType.Reference())
+		outputBuilder.WriteString(");\n")
+	}
+	outputBuilder.WriteString("}\n")
+
+	// Serialize all types
 	serializableTypeSet := make(map[ProtobufSerializable]struct{})
 
 	var visitType func(targetType ProtobufType)
