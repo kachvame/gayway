@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.9
-// source: output.proto
+// source: gateway.proto
 
 package grpc
 
@@ -7373,5 +7373,5 @@ var Gayway_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "output.proto",
+	Metadata: "gateway.proto",
 }

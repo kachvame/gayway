@@ -20,6 +20,11 @@ var (
 	}
 )
 
+const (
+	outputFile    = "gateway.proto"
+	outputPackage = "./grpc"
+)
+
 type Config struct {
 	Logger zerolog.Logger
 }
@@ -50,7 +55,7 @@ func (generator *Generator) Run() error {
 	generator.logger.Debug().Msg("found Session struct")
 
 	protobufBuilder := NewProtobufBuilder("Gayway")
-	protobufBuilder.SetOption("go_package", "./grpc")
+	protobufBuilder.SetOption("go_package", outputPackage)
 
 	err = VisitExportedMethods(sessionStruct, func(method *types.Func) error {
 		methodName := method.Name()
@@ -90,17 +95,17 @@ func (generator *Generator) Run() error {
 	}
 
 	proto := protobufBuilder.Serialize()
-	if err = os.WriteFile("output.proto", []byte(proto), 0644); err != nil {
+	if err = os.WriteFile(outputFile, []byte(proto), 0644); err != nil {
 		return fmt.Errorf("failed to write output: %w", err)
 	}
 
-	generator.logger.Info().Msg("Wrote output to output.proto")
+	generator.logger.Info().Msgf("Wrote output to %s", outputFile)
 
-	if err = exec.Command("protoc", "--go-grpc_out=.", "--go_out=.", "output.proto").Run(); err != nil {
+	if err = exec.Command("protoc", "--go-grpc_out=.", "--go_out=.", outputFile).Run(); err != nil {
 		return fmt.Errorf("failed to generate grpc interfaces: %w", err)
 	}
 
-	generator.logger.Info().Msg("Generated gRPC boilerplate in ./grpc")
+	generator.logger.Info().Msgf("Generated gRPC boilerplate in %s", outputPackage)
 
 	return nil
 }
