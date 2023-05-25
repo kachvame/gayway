@@ -49,6 +49,7 @@ func (generator *Generator) Run() error {
 	generator.logger.Debug().Msg("found Session struct")
 
 	protobufBuilder := NewProtobufBuilder("Gayway")
+	protobufBuilder.SetOption("go_package", "./grpc")
 
 	err = VisitExportedMethods(sessionStruct, func(method *types.Func) error {
 		methodName := method.Name()

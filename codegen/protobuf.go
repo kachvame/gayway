@@ -11,6 +11,14 @@ import (
 type ProtobufBuilder struct {
 	Name    string
 	Methods []*ProtobufMethod
+	Options map[string]string
+}
+
+func NewProtobufBuilder(serviceName string) *ProtobufBuilder {
+	return &ProtobufBuilder{
+		Name:    serviceName,
+		Options: make(map[string]string),
+	}
 }
 
 func (builder *ProtobufBuilder) AddMethod(name string, argument ProtobufType, returnType ProtobufType) {
@@ -21,6 +29,10 @@ func (builder *ProtobufBuilder) AddMethod(name string, argument ProtobufType, re
 	})
 }
 
+func (builder *ProtobufBuilder) SetOption(key string, value string) {
+	builder.Options[key] = value
+}
+
 func (builder *ProtobufBuilder) Serialize() string {
 	outputBuilder := &strings.Builder{}
 
@@ -29,6 +41,15 @@ func (builder *ProtobufBuilder) Serialize() string {
 	// Always import `any`
 	outputBuilder.WriteString(`import "google/protobuf/any.proto";`)
 	outputBuilder.WriteRune('\n')
+
+	// Serialize options
+	for key, value := range builder.Options {
+		outputBuilder.WriteString("option ")
+		outputBuilder.WriteString(key)
+		outputBuilder.WriteString(" = ")
+		outputBuilder.WriteString(strconv.Quote(value))
+		outputBuilder.WriteString(";\n")
+	}
 
 	// Serialize service
 	outputBuilder.WriteString("service ")
@@ -233,12 +254,6 @@ type ProtobufAny struct{}
 
 func (any *ProtobufAny) Reference() string {
 	return "google.protobuf.Any"
-}
-
-func NewProtobufBuilder(serviceName string) *ProtobufBuilder {
-	return &ProtobufBuilder{
-		Name: serviceName,
-	}
 }
 
 type ProtobufReference struct {
