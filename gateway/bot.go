@@ -31,10 +31,11 @@ type Config struct {
 }
 
 type Gateway struct {
-	session   *discordgo.Session
-	store     kv.Store
-	logger    zerolog.Logger
-	publisher message.Publisher
+	session            *discordgo.Session
+	store              kv.Store
+	logger             zerolog.Logger
+	publisher          message.Publisher
+	publishingHandlers map[string]Handler
 }
 
 func NewGateway(config Config) (*Gateway, error) {
@@ -48,42 +49,16 @@ func NewGateway(config Config) (*Gateway, error) {
 		store:     config.Store,
 		logger:    config.Logger,
 		publisher: config.Publisher,
+		publishingHandlers: map[string]Handler{
+			"MESSAGE_CREATE": handler(handleMessageCreate),
+		},
 	}
-
-	session.AddHandler(
-		eventHandler(
-			gateway,
-			func(_ *discordgo.Session, event *discordgo.MessageCreate) (topic EventTopic, key string) {
-				return handleMessageEvents(event.Message)
-			},
-		),
-	)
 
 	session.AddHandler(gateway.Ready)
 	session.AddHandler(gateway.Resumed)
+	session.AddHandler(gateway.PublishingHandler)
 
 	return gateway, nil
-}
-
-func eventHandler[T any](gateway *Gateway, fn EventHandlerFunc[T]) func(s *discordgo.Session, event *discordgo.Event) {
-	return func(s *discordgo.Session, rawEvent *discordgo.Event) {
-		event, ok := rawEvent.Struct.(T)
-		if !ok {
-			return
-		}
-		topic, key := fn(s, event)
-		msg := message.NewMessage(
-			watermill.NewULID(),
-			message.Payload(rawEvent.RawData),
-		)
-
-		msg.Metadata.Set("partition", key)
-
-		if err := gateway.publisher.Publish(string(topic), msg); err != nil {
-			gateway.logger.Error().Err(err).Msg("Error occurred during publishing")
-			return
-		}
-	}
 }
 
 func (gateway *Gateway) Start() error {
@@ -147,4 +122,28 @@ func (gateway *Gateway) Resumed(_ *discordgo.Session, _ *discordgo.Resumed) {
 	gateway.logger.
 		Info().
 		Msg("Received resumed")
+}
+
+func (gateway *Gateway) PublishingHandler(s *discordgo.Session, event *discordgo.Event) {
+	fn, ok := gateway.publishingHandlers[event.Type]
+	if !ok {
+		return
+	}
+
+	topic, key := fn.Handle(s, event)
+	if topic == "" {
+		return
+	}
+
+	msg := message.NewMessage(
+		watermill.NewULID(),
+		message.Payload(event.RawData),
+	)
+
+	msg.Metadata.Set("partition", key)
+
+	if err := gateway.publisher.Publish(fmt.Sprintf("gayway-%s", topic), msg); err != nil {
+		gateway.logger.Error().Err(err).Msg("Error occurred during publishing")
+		return
+	}
 }
