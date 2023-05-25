@@ -1,12 +1,20 @@
 package gateway
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"encoding/json"
+	"github.com/bwmarrin/discordgo"
+)
 
 type Topic string
 
 const (
 	MessageEventTopic Topic = "messages"
 )
+
+type Message struct {
+	Event json.RawMessage `json:"event"`
+	Type  string          `json:"type"`
+}
 
 type Handler interface {
 	Handle(session *discordgo.Session, event *discordgo.Event) (topic Topic, key string, ok bool)

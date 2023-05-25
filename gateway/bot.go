@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
@@ -143,9 +144,18 @@ func (gateway *Gateway) CratePublishingHandler(handler Handler) func(s *discordg
 			return
 		}
 
+		payload, err := json.Marshal(Message{
+			Event: event.RawData,
+			Type:  event.Type,
+		})
+		if err != nil {
+			gateway.logger.Error().Err(err).Msg("Error occurred during message marshalling")
+			return
+		}
+
 		msg := message.NewMessage(
 			watermill.NewULID(),
-			message.Payload(event.RawData),
+			payload,
 		)
 
 		msg.Metadata.Set("partition", key)
