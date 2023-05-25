@@ -21,7 +21,7 @@ func (builder *ProtobufBuilder) AddMethod(name string, argument ProtobufType, re
 	})
 }
 
-func (builder *ProtobufBuilder) Build() string {
+func (builder *ProtobufBuilder) Serialize() string {
 	outputBuilder := &strings.Builder{}
 
 	// Always import `any`

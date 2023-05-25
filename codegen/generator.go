@@ -87,7 +87,7 @@ func (generator *Generator) Run() error {
 		return fmt.Errorf("failed to build protobuf schema: %w", err)
 	}
 
-	proto := protobufBuilder.Build()
+	proto := protobufBuilder.Serialize()
 	if err = os.WriteFile("output.proto", []byte(proto), 0644); err != nil {
 		return fmt.Errorf("failed to write output: %w", err)
 	}
