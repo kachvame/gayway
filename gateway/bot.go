@@ -2,7 +2,6 @@ package gateway
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
@@ -51,32 +50,39 @@ func NewGateway(config Config) (*Gateway, error) {
 		publisher: config.Publisher,
 	}
 
+	session.AddHandler(
+		eventHandler(
+			gateway,
+			func(_ *discordgo.Session, event *discordgo.MessageCreate) (topic EventTopic, key string) {
+				return handleMessageEvents(event.Message)
+			},
+		),
+	)
+
 	session.AddHandler(gateway.Ready)
 	session.AddHandler(gateway.Resumed)
-	session.AddHandler(gateway.OnEvent)
 
 	return gateway, nil
 }
 
-func (gateway *Gateway) OnEvent(_ *discordgo.Session, event *discordgo.Event) {
-	msg := message.NewMessage(
-		watermill.NewULID(),
-		message.Payload(event.RawData),
-	)
+func eventHandler[T any](gateway *Gateway, fn EventHandlerFunc[T]) func(s *discordgo.Session, event *discordgo.Event) {
+	return func(s *discordgo.Session, rawEvent *discordgo.Event) {
+		event, ok := rawEvent.Struct.(T)
+		if !ok {
+			return
+		}
+		topic, key := fn(s, event)
+		msg := message.NewMessage(
+			watermill.NewULID(),
+			message.Payload(rawEvent.RawData),
+		)
 
-	var rawData map[string]any
-	if err := json.Unmarshal(event.RawData, &rawData); err != nil {
-		gateway.logger.Error().Err(err).Msg("Error occurred during unmarshalling event")
-	}
+		msg.Metadata.Set("partition", key)
 
-	guildID, ok := rawData["guild_id"].(string)
-	if ok {
-		msg.Metadata.Set("partition", guildID)
-	}
-
-	if err := gateway.publisher.Publish("DISCORD_EVENTS", msg); err != nil {
-		gateway.logger.Error().Err(err).Msg("Error occurred during publishing")
-		return
+		if err := gateway.publisher.Publish(string(topic), msg); err != nil {
+			gateway.logger.Error().Err(err).Msg("Error occurred during publishing")
+			return
+		}
 	}
 }
 
