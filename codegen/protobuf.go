@@ -13,10 +13,10 @@ type ProtobufBuilder struct {
 	Methods []*ProtobufMethod
 }
 
-func (builder *ProtobufBuilder) AddMethod(name string, arguments []ProtobufType, returnType ProtobufType) {
+func (builder *ProtobufBuilder) AddMethod(name string, argument ProtobufType, returnType ProtobufType) {
 	builder.Methods = append(builder.Methods, &ProtobufMethod{
 		Name:       name,
-		Arguments:  arguments,
+		Argument:   argument,
 		ReturnType: returnType,
 	})
 }
@@ -44,10 +44,7 @@ func (builder *ProtobufBuilder) Build() string {
 	}
 
 	for _, method := range builder.Methods {
-		for _, argument := range method.Arguments {
-			visitType(argument)
-		}
-
+		visitType(method.Argument)
 		visitType(method.ReturnType)
 	}
 
@@ -70,7 +67,7 @@ func (builder *ProtobufBuilder) Build() string {
 
 type ProtobufMethod struct {
 	Name       string
-	Arguments  []ProtobufType
+	Argument   ProtobufType
 	ReturnType ProtobufType
 }
 

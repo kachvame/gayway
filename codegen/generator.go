@@ -79,7 +79,7 @@ func (generator *Generator) Run() error {
 			return fmt.Errorf("failed to build protobuf result type: %w", err)
 		}
 
-		protobufBuilder.AddMethod(methodName, []ProtobufType{params}, result)
+		protobufBuilder.AddMethod(methodName, params, result)
 
 		return nil
 	})
