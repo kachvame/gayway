@@ -81,7 +81,13 @@ func (generator *Generator) Run() error {
 			return fmt.Errorf("failed to build protobuf params type: %w", err)
 		}
 
-		result, err := MessageFromFields(fmt.Sprintf("%sOutput", methodName), tupleElements(methodSignature.Results()))
+		resultTypes := tupleElements(methodSignature.Results())
+		lastResult := resultTypes[len(resultTypes)-1]
+		if IsErr(lastResult.Type()) {
+			resultTypes = resultTypes[:len(resultTypes)-1]
+		}
+
+		result, err := MessageFromFields(fmt.Sprintf("%sOutput", methodName), resultTypes)
 		if err != nil {
 			return fmt.Errorf("failed to build protobuf result type: %w", err)
 		}

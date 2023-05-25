@@ -384,27 +384,39 @@ func convertBasicType(basicType *types.Basic) (ProtobufType, error) {
 	return nil, fmt.Errorf("unknown basic type: %v", basicType)
 }
 
+func IsErr(target types.Type) bool {
+	named, ok := target.(*types.Named)
+	if !ok {
+		return false
+	}
+
+	if _, ok = named.Underlying().(*types.Interface); !ok {
+		return false
+	}
+
+	isBuiltin := named.Obj().Pkg() == nil
+	if !isBuiltin {
+		return false
+	}
+
+	return named.Obj().Name() == "error"
+}
+
 func convertNamed(named *types.Named) (ProtobufType, error) {
 	name := named.Obj().Name()
 	underlying := named.Underlying()
-	isBuiltin := named.Obj().Pkg() == nil
+
+	if IsErr(named) {
+		return &ProtobufOptional{
+			Element: &ProtobufString{},
+		}, nil
+	}
 
 	switch underlying.(type) {
 	case *types.Struct:
 		return convertStruct(name, underlying.(*types.Struct))
 	// TODO: interfaces
 	case *types.Interface:
-		if isBuiltin {
-			switch name {
-			case "error":
-				return &ProtobufOptional{
-					Element: &ProtobufString{},
-				}, nil
-			}
-
-			return nil, fmt.Errorf("unknown builtin interface: %v (%T)", named, underlying)
-		}
-
 		return &ProtobufMessage{
 			Name: name,
 		}, nil
