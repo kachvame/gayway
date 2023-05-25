@@ -5,6 +5,7 @@ import (
 	"github.com/rs/zerolog"
 	"go/types"
 	"os"
+	"os/exec"
 )
 
 var (
@@ -94,6 +95,12 @@ func (generator *Generator) Run() error {
 	}
 
 	generator.logger.Info().Msg("Wrote output to output.proto")
+
+	if err = exec.Command("protoc", "--go-grpc_out=.", "--go_out=.", "output.proto").Run(); err != nil {
+		return fmt.Errorf("failed to generate grpc interfaces: %w", err)
+	}
+
+	generator.logger.Info().Msg("Generated gRPC boilerplate in ./grpc")
 
 	return nil
 }
