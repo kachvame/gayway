@@ -62,7 +62,7 @@ func NewGateway(config Config) (*Gateway, error) {
 
 	for _, publishingHandler := range publishingHandlers {
 		session.AddHandler(
-			gateway.CratePublishingHandler(
+			gateway.CreatePublishingHandler(
 				publishingHandler,
 			),
 		)
@@ -137,7 +137,7 @@ func (gateway *Gateway) Resumed(_ *discordgo.Session, _ *discordgo.Resumed) {
 		Msg("Received resumed")
 }
 
-func (gateway *Gateway) CratePublishingHandler(handler Handler) func(s *discordgo.Session, event *discordgo.Event) {
+func (gateway *Gateway) CreatePublishingHandler(handler Handler) func(s *discordgo.Session, event *discordgo.Event) {
 	return func(session *discordgo.Session, event *discordgo.Event) {
 		topic, key, ok := handler.Handle(session, event)
 		if !ok {
